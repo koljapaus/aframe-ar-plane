@@ -8,15 +8,26 @@
     <script src="https://rawgit.com/google-ar/three.ar.js/master/dist/three.ar.js"></script>
     <script src="https://rawgit.com/chenzlabs/aframe-ar/experimental-planes/dist/aframe-ar.js"></script>
   </head>
-  <body>
+  <body>    
     <a-scene ar>
-      <a-box id="ground" material="side:double" opacity="0.1" width="3" height="0.001" depth="3"></a-box>
-      <a-box id="onemeter" material="side:double;color:red" opacity="0.1" width="1" height="0.01" depth="1"></a-box>
       <a-sphere id="ball" radius="0.01" position="0 0.005 -0.5"></a-sphere>
       
       <a-camera>
-        <a-text id="hud" position="0 0.15 0.25" value="Hi there"></a-text>
+        <a-text id="hud" color="red" align="center" scale="0.01 0.01 0.01" position="0 -0.025 -0.1" value="Hi there"></a-text>
       </a-camera>
-    </a-scene>
+    </a-scene>    
+    
+    <script>
+      var sc = document.querySelector('a-scene');
+      
+      function addEventListeners() {
+        scene.addEventListener('createplane', onPlaneEvent);
+        scene.addEventListener('createplane', onPlaneEvent);
+        scene.addEventListener('createplane', onPlaneEvent);
+      }
+      
+      function onSceneLoaded() { addEventListeners(); }
+      if (sc.hasLoaded) { onSceneLoaded(); } else { sc.addEventListener('loaded', onSceneLoaded); }
+    </script>
   </body>
 </html>
