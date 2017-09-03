@@ -31,6 +31,8 @@
           this.tick = AFRAME.utils.throttleTick(this.tick, this.data.interval, this);
         },
         
+        // TODO: update
+        
         tick: function () {
           var threear = this.el.sceneEl.components['three-ar'];
           if (!threear || !threear.arDisplay || !threear.arDisplay.hitTest) { return; }
