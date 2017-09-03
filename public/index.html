@@ -23,24 +23,41 @@
     
     <script>
       var sc = document.querySelector('a-scene');
+      function showHUD(msg) { sc.querySelector('#hud').setAttribute('value', msg); }
       
-      function onPlaneEvent(evt) {
-        showHUD(evt.detail.type);
-      }
+      function onCreatePlane(evt) {
+        showHUD('onCreatePlane: ' + JSON.stringify(evt.detail.extent)); //Object.keys(evt.detail).join(','));
+        var plane = document.createElement('a-box');
+        plane.setAttribute('id', 'plane_' + evt.detail.id);
+        plane.setAttribute('width', evt.detail.extent.x);
+        plane.setAttribute('height', 0.001);
+        plane.setAttribute('depth', evt.detail.extent.z);
+        plane.setAttribute('position', evt.detail.position);
+        plane.setAttribute('rotation', evt.detail.rotation);
+        plane.setAttribute('scale', evt.detail.scale);
+        sc.appendChild()
+      }      
       
-      function showHUD(msg) {}
-        sc.querySelector('#hud').setAttribute('text', {value: msg});  
-      }
+      function onUpdatePlane(evt) {
+        showHUD('onUpdatePlane: ' + Object.keys(evt.detail).join(','));
+      }      
+      
+      function onRemovePlane(evt) {
+        showHUD('onRemovePlane: ' + Object.keys(evt.detail).join(','));
+      }      
       
       function addEventListeners() {
-        sc.addEventListener('createplane', onPlaneEvent);
-        sc.addEventListener('updateplane', onPlaneEvent);
-        sc.addEventListener('removeplane', onPlaneEvent);
-        showHUD('plane listeners added');
+        sc.addEventListener('createplane', onCreatePlane);
+        //sc.addEventListener('updateplane', onUpdatePlane);
+        sc.addEventListener('removeplane', onRemovePlane);
       }
       
-      function onSceneLoaded() { addEventListeners(); }
-      if (sc.hasLoaded) { onSceneLoaded(); } else { sc.addEventListener('loaded', onSceneLoaded); }
+      function onSceneLoaded() { 
+        addEventListeners(); 
+      }
+      
+      if (sc.hasLoaded) { onSceneLoaded(); }
+      else { sc.addEventListener('loaded', onSceneLoaded); }
     </script>
   </body>
 </html>
