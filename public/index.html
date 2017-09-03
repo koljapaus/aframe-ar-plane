@@ -18,9 +18,49 @@
         }
       });            
     </script>
+
+    <script>
+      AFRAME.registerComponent('ar-raycaster', {      
+        schema: {
+          x: {default: 0.5},
+          y: {default: 0.5},
+          interval: { default: 100 }
+        },
+        
+        init: function () {
+          this.tick = AFRAME.utils.throttleTick(this.tick, this.data.interval, this);
+        },
+        
+        tick: function () {
+          var threear = this.el.sceneEl.components['three-ar'];
+          if (!threear || !threear.arDisplay || !threear.arDisplay.hitTest) { return; }
+          
+          var hit = threear.arDisplay.hitTest(this.data.x, this.data.y);
+
+          if (hit && hit.length > 0) {
+            // At least one hit.
+            //var transform = hit[0].modelMatrix;
+            this.hitEl = this.el; // FIXME: really should do a raycast and only hit "ground" if missed
+            this.el.emit('raycaster-intersection', {
+              els: [this.hitEl], 
+              intersections: [{ }] // FIXME: what are the parameters supposed to be? Use transform...
+            });
+          } else {
+            // No longer hit.
+            if (this.hitEl) {
+              var wasHitEl = this.hitEl;
+              delete this.hitEl;
+              this.el.emit('raycaster-intersection-cleared', {el: wasHitEl});
+            }
+          }         
+        }
+      });
+    </script>
     
     <a-scene ar>
       <a-sphere id="ball" radius="0.01" position="0 0.005 -0.5"></a-sphere>
+      
+      <a-entity id="background" ar-raycaster></a-entity>
       
       <a-camera>
         <a-text id="hud" 
@@ -63,6 +103,14 @@
         sc.addEventListener('createplane', onCreateOrUpdatePlane);
         sc.addEventListener('updateplane', onCreateOrUpdatePlane);
         sc.addEventListener('removeplane', onRemovePlane);
+        
+        var background = sc.querySelector('#background');
+        background.addEventListener('raycaster-intersection', function (evt) {
+          showHUD('raycaster-intersection');
+        });
+        background.addEventListener('raycaster-intersection-cleared', function (evt) {
+          showHUD('raycaster-intersection-cleared');
+        });
       }
       
       function onSceneLoaded() { 
