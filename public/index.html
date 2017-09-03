@@ -6,6 +6,7 @@
     <meta name="description" content="Hello, World! • A-Frame three.ar.js">
     <script src="https://aframe.io/releases/0.6.1/aframe.min.js"></script>
     <script src="https://rawgit.com/google-ar/three.ar.js/master/dist/three.ar.js"></script>
+    <script src="https://rawgit.com/chenzlabs/aframe-ar/experimental-planes/dist/aframe-three-ar-planes.js"></script>
     <script src="https://rawgit.com/chenzlabs/aframe-ar/experimental-planes/dist/aframe-ar.js"></script>
   </head>
   <body>    
@@ -13,17 +14,29 @@
       <a-sphere id="ball" radius="0.01" position="0 0.005 -0.5"></a-sphere>
       
       <a-camera>
-        <a-text id="hud" color="red" align="center" scale="0.01 0.01 0.01" position="0 -0.025 -0.1" value="Hi there"></a-text>
+        <a-text id="hud" 
+                scale="0.01 0.01 0.01" position="0 -0.025 -0.1" 
+                color="red" align="center" 
+                value="Hi there"></a-text>
       </a-camera>
     </a-scene>    
     
     <script>
       var sc = document.querySelector('a-scene');
       
+      function onPlaneEvent(evt) {
+        showHUD(evt.detail.type);
+      }
+      
+      function showHUD(msg) {}
+        sc.querySelector('#hud').setAttribute('text', {value: msg});  
+      }
+      
       function addEventListeners() {
-        scene.addEventListener('createplane', onPlaneEvent);
-        scene.addEventListener('createplane', onPlaneEvent);
-        scene.addEventListener('createplane', onPlaneEvent);
+        sc.addEventListener('createplane', onPlaneEvent);
+        sc.addEventListener('updateplane', onPlaneEvent);
+        sc.addEventListener('removeplane', onPlaneEvent);
+        showHUD('plane listeners added');
       }
       
       function onSceneLoaded() { addEventListeners(); }
