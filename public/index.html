@@ -41,11 +41,20 @@
 
           if (hit && hit.length > 0) {
             // At least one hit.
-            //var transform = hit[0].modelMatrix;
+            F
+            var transform = hit[0].modelMatrix;
             this.hitEl = this.el; // FIXME: really should do a raycast and only hit "ground" if missed
             this.el.emit('raycaster-intersection', {
               els: [this.hitEl], 
-              intersections: [{ }] // FIXME: what are the parameters supposed to be? Use transform...
+              intersections: [{
+                distance: 0,
+                point: 0,
+                face: undefined,
+                faceIndex: undefined,
+                index: undefined,
+                object: undefined,
+                uv: undefined // Vector2                
+                }] // FIXME: what are the parameters supposed to be? Use transform...
             });
           } else {
             // No longer hit.
