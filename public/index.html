@@ -135,6 +135,7 @@
         sc.addEventListener('removeplane', onRemovePlane);
         
         var background = sc.querySelector('#background');
+        // Note, -intersection is what the raycaster gets; the hit object gets -intersected.
         background.addEventListener('raycaster-intersection', function (evt) {
           showHUD('raycaster-intersection');
           ball.setAttribute('position', evt.detail.intersections[0].point);
