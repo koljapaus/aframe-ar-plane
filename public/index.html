@@ -20,6 +20,10 @@
     </script>
 
     <script>
+      // May want to try alternative approach where
+      // ar-raycaster responds to raycast-intersection-cleared
+      // (from normal raycaster)
+      // by trying AR hit instead...
       AFRAME.registerComponent('ar-raycaster', {      
         schema: {
           x: {default: 0.5},
@@ -41,18 +45,24 @@
 
           if (hit && hit.length > 0) {
             // At least one hit.
-            F
-            var transform = hit[0].modelMatrix;
+            // For now, only process the first hit.
+            var transform = new THREE.Matrix4.fromArray(hit[0].modelMatrix);
+            var hitpoint = new THREE.Vector3();
+            var hitquat = new THREE.Quaternion();
+            var hitscale = new THREE.Vector3();
+            transform.decompose(hitpoint, hitquat, hitscale);
             this.hitEl = this.el; // FIXME: really should do a raycast and only hit "ground" if missed
             this.el.emit('raycaster-intersection', {
               els: [this.hitEl], 
               intersections: [{
-                distance: 0,
-                point: 0,
-                face: undefined,
+                distance: hitpoint.distanceTo(this.el.object3D.position), // is that right point?
+                point: hitpoint, // Vector3
+                
+                // We don't have any of these properties...
+                face: undefined, // Face3
                 faceIndex: undefined,
                 index: undefined,
-                object: undefined,
+                object: undefined, // usually a Mesh
                 uv: undefined // Vector2                
                 }] // FIXME: what are the parameters supposed to be? Use transform...
             });
