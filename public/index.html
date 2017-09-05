@@ -24,6 +24,7 @@
       // ar-raycaster responds to raycast-intersection-cleared
       // (from normal raycaster)
       // by trying AR hit instead...
+      // but current exposed API does not support ray orientation as input.
       AFRAME.registerComponent('ar-raycaster', {      
         schema: {
           x: {default: 0.5},
@@ -37,44 +38,52 @@
         
         // TODO: update
         
-        tick: function () {
-          var threear = this.el.sceneEl.components['three-ar'];
-          if (!threear || !threear.arDisplay || !threear.arDisplay.hitTest) { return; }
+        tick: (function () {
           
-          var hit = threear.arDisplay.hitTest(this.data.x, this.data.y);
+          // Temporary variables, only within closure scope.
+          var transform = new THREE.Matrix4();
+          var hitpoint = new THREE.Vector3();
+          var hitquat = new THREE.Quaternion();
+          var hitscale = new THREE.Vector3();
+          
+          // The desired function, which this returns.
+          return function () {
+            var threear = this.el.sceneEl.components['three-ar'];
+            if (!threear || !threear.arDisplay || !threear.arDisplay.hitTest) { return; }
 
-          if (hit && hit.length > 0) {
-            // At least one hit.
-            // For now, only process the first hit.
-            var transform = new THREE.Matrix4.fromArray(hit[0].modelMatrix);
-            var hitpoint = new THREE.Vector3();
-            var hitquat = new THREE.Quaternion();
-            var hitscale = new THREE.Vector3();
-            transform.decompose(hitpoint, hitquat, hitscale);
-            this.hitEl = this.el; // FIXME: really should do a raycast and only hit "ground" if missed
-            this.el.emit('raycaster-intersection', {
-              els: [this.hitEl], 
-              intersections: [{
-                distance: hitpoint.distanceTo(this.el.object3D.position), // is that right point?
-                point: hitpoint, // Vector3
-                
-                // We don't have any of these properties...
-                face: undefined, // Face3
-                faceIndex: undefined,
-                index: undefined,
-                object: undefined, // usually a Mesh
-                uv: undefined // Vector2                
-                }] // FIXME: what are the parameters supposed to be? Use transform...
-            });
-          } else {
-            // No longer hit.
-            if (this.hitEl) {
-              var wasHitEl = this.hitEl;
-              delete this.hitEl;
-              this.el.emit('raycaster-intersection-cleared', {el: wasHitEl});
-            }
-          }         
-        }
+            var hit = threear.arDisplay.hitTest(this.data.x, this.data.y);
+
+            if (hit && hit.length > 0) {
+              // At least one hit.
+              // For now, only process the first hit.
+              // FIXME: really should do a raycast and only hit "ground" if missed
+              transform.fromArray(hit[0].modelMatrix);
+              transform.decompose(hitpoint, hitquat, hitscale);
+              this.hitEl = this.el;
+              this.el.emit('raycaster-intersection', {
+                els: [this.hitEl], 
+                intersections: [{
+                  distance: hitpoint.distanceTo(this.el.object3D.position), // Is that right point?
+                  point: hitpoint, // Vector3
+
+                  // We don't have any of these properties...
+                  face: undefined, // Face3
+                  faceIndex: undefined,
+                  index: undefined,
+                  object: undefined, // usually a Mesh
+                  uv: undefined // Vector2                
+                  }] // FIXME: what are the parameters supposed to be? Use transform...
+              });
+            } else {
+              // No longer hit.
+              if (this.hitEl) {
+                var wasHitEl = this.hitEl;
+                delete this.hitEl;
+                this.el.emit('raycaster-intersection-cleared', {el: wasHitEl});
+              }
+            }         
+          }        
+        })()
       });
     </script>
     
@@ -128,9 +137,11 @@
         var background = sc.querySelector('#background');
         background.addEventListener('raycaster-intersection', function (evt) {
           showHUD('raycaster-intersection');
+          ball.setAttribute('position', evt.detail.intersections[0].point);
         });
         background.addEventListener('raycaster-intersection-cleared', function (evt) {
           showHUD('raycaster-intersection-cleared');
+          ball.setAttribute('position', "0 0.005 -0.5");
         });
       }
       
