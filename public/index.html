@@ -72,7 +72,7 @@
                   index: undefined,
                   object: undefined, // usually a Mesh
                   uv: undefined // Vector2                
-                  }] // FIXME: what are the parameters supposed to be? Use transform...
+                  }]
               });
             } else {
               // No longer hit.
@@ -121,6 +121,12 @@
         plane.setAttribute('position', evt.detail.position);
         plane.setAttribute('rotation', evt.detail.rotation);
         plane.setAttribute('scale', evt.detail.scale);
+        plane.setAttribute('text', {value: 
+          'id: ' + plane.getAttribute('id')
+        + '\nwidth: ' + plane.getAttribute('width')
+        + '\ndepth: ' + plane.getAttribute('depth')
+        + '\nposition: ' + plane.getAttribute('position')
+        });
         return plane;
       }      
       
