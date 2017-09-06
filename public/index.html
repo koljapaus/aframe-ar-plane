@@ -6,7 +6,10 @@
     <meta name="description" content="Hello, World! • A-Frame three.ar.js">
     <script src="https://aframe.io/releases/0.6.1/aframe.min.js"></script>
     <script src="https://rawgit.com/google-ar/three.ar.js/master/dist/three.ar.js"></script>
+<!--
     <script src="https://rawgit.com/chenzlabs/aframe-ar/experimental-planes/dist/aframe-three-ar-planes.js"></script>
+-->
+    <script src="aframe-three-ar-planes.js"></script>
     <script src="https://rawgit.com/chenzlabs/aframe-ar/experimental-planes/dist/aframe-ar.js"></script>
   </head>
   <body>    
@@ -93,7 +96,7 @@
       <a-entity id="background" ar-raycaster></a-entity>
       
       <a-camera>
-        <a-sphere id="dot" radius="0.001" position="0 0 -0.4"></a-sphere>
+        <a-sphere id="dot" color="red" radius="0.001" position="0 0 -0.4"></a-sphere>
         <a-text id="hud" 
                 scale="0.01 0.01 0.01" position="0 -0.025 -0.1" 
                 color="red" align="center" 
@@ -138,7 +141,9 @@
         + '\nrotation x: ' + plane.getAttribute('rotation').x
         + '\nrotation y: ' + plane.getAttribute('rotation').y
         + '\nrotation z: ' + plane.getAttribute('rotation').z
-        //+ '\nscale: ' + plane.getAttribute('scale')
+        + '\nscale x: ' + plane.getAttribute('scale').x
+        + '\nscale y: ' + plane.getAttribute('scale').y
+        + '\nscale z: ' + plane.getAttribute('scale').z
         });
         return plane;
       }      
