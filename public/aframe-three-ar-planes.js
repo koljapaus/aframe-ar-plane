@@ -32,7 +32,7 @@ AFRAME.registerComponent('three-ar-planes', {
         // Is it cheaper to treat every time as an update, or to check?
         // DEFINITELY cheaper to check.
         // Unfortunately with current WebARonARKit, brute force is needed.
-        if (!AFRAME.utils.deepEqual(anchor, this.planes[anchor.identifier])) {
+        if (true || !AFRAME.utils.deepEqual(anchor, this.planes[anchor.identifier])) {
           // Remember the updated information.
           this.planes[anchor.identifier] = JSON.parse(JSON.stringify(anchor));
           
@@ -51,7 +51,7 @@ AFRAME.registerComponent('three-ar-planes', {
         this.planes[anchor.identifier].marked = true;
       } else {
         // We haven't seen it, so remember it.
-        this.planes[anchor.identifier] = anchor;
+        this.planes[anchor.identifier] = JSON.parse(JSON.stringify(anchor));
         this.planes[anchor.identifier].marked = true;
 
         // Emit event.
