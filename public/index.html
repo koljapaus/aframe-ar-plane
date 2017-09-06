@@ -114,18 +114,30 @@
           plane.setAttribute('height', 0.001);
           sc.appendChild(plane);
           
-          plane.insertAdjacentHTML('beforeend', '<a-entity thing></a-entity>');
+          plane.insertAdjacentHTML('beforeend', 
+            '<a-entity class="label" rotation="-90 0 0"></a-entity><a-entity thing></a-entity>');
         }
         plane.setAttribute('width', evt.detail.extent.x);
         plane.setAttribute('depth', evt.detail.extent.z);
         plane.setAttribute('position', evt.detail.position);
         plane.setAttribute('rotation', evt.detail.rotation);
         plane.setAttribute('scale', evt.detail.scale);
-        plane.setAttribute('text', {value: 
+        
+        plane.querySelector('.label').setAttribute('text', {
+         width: plane.getAttribute('width'), 
+         height: plane.getAttribute('depth'), 
+         align: 'left',
+         wrapCount: 100, value: 
           'id: ' + plane.getAttribute('id')
         + '\nwidth: ' + plane.getAttribute('width')
         + '\ndepth: ' + plane.getAttribute('depth')
-        + '\nposition: ' + plane.getAttribute('position')
+        + '\nposition x: ' + plane.getAttribute('position').x
+        + '\nposition y: ' + plane.getAttribute('position').y
+        + '\nposition z: ' + plane.getAttribute('position').z
+        + '\nrotation x: ' + plane.getAttribute('rotation').x
+        + '\nrotation y: ' + plane.getAttribute('rotation').y
+        + '\nrotation z: ' + plane.getAttribute('rotation').z
+        //+ '\nscale: ' + plane.getAttribute('scale')
         });
         return plane;
       }      
@@ -148,7 +160,7 @@
         });
         background.addEventListener('raycaster-intersection-cleared', function (evt) {
           showHUD('raycaster-intersection-cleared');
-          ball.setAttribute('position', "0 0.005 -0.5");
+          ball.setAttribute('position', "0 0 0");
         });
       }
       
