@@ -34,33 +34,20 @@ AFRAME.registerComponent('three-ar-planes', {
         tempRotation.y *= THREE.Math.RAD2DEG;
         tempRotation.z *= THREE.Math.RAD2DEG;
         tempExtent.set(anchor.extent[0], 0, anchor.extent[1]);
-        // Check if we've seen this one.
-        if (this.planes[anchor.identifier]) {
+        var planeExistsAlready = this.planes[anchor.identifier];
+        var emitEvent = !planeExistsAlready 
           // Is it cheaper to treat every time as an update, or to check?
           // DEFINITELY cheaper to check.
           // Unfortunately with current WebARonARKit, brute force is needed.
-          if (!AFRAME.utils.deepEqual(anchor, this.planes[anchor.identifier])) {
-            // Remember the updated information.
-            this.planes[anchor.identifier] = JSON.parse(JSON.stringify(anchor));
-            this.planes[anchor.identifier].marked = true;
-
-            // Emit event.
-            this.el.emit('updateplane', {
-              id: anchor.identifier,
-              alignment: anchor.alignment,
-              extent: tempExtent,
-              position: tempPosition,
-              rotation: tempRotation,
-              scale: tempScale
-            });
-          }
-        } else {
-          // We haven't seen it, so remember it.
+          || !AFRAME.utils.deepEqual(anchor, this.planes[anchor.identifier]);
+        
+        if (emitEvent) {
+          // Remember the updated information.
           this.planes[anchor.identifier] = JSON.parse(JSON.stringify(anchor));
           this.planes[anchor.identifier].marked = true;
 
           // Emit event.
-          this.el.emit('createplane', {
+          this.el.emit(planeExistsAlready ? 'updateplane' : 'createplane', {
             id: anchor.identifier,
             alignment: anchor.alignment,
             extent: tempExtent,
@@ -69,12 +56,14 @@ AFRAME.registerComponent('three-ar-planes', {
             scale: tempScale
           });
         }
+        
         // TODO:
         // If removed anchors can still appear in the list,
         // handle that here.
       }
 
       // Iterate over planes we've seen; if they're removed, emit events.
+      var deleteThese = [];
       this.planes.forEach(function(key, value, map) {
         var plane = this.planes[key];
         if (plane.marked) {
@@ -83,9 +72,11 @@ AFRAME.registerComponent('three-ar-planes', {
         } else {
           // Emit event.
           this.el.emit('removeplane', {id: plane.identifier});
-          delete this.planes[key];
+          deleteThese.push(key);
         }
       });
+      // Delete after we have looped over them in case there are races.
+      deleteThese.forEach(function(key) { delete this.planes[key]; });
     };    
   })()
 });
