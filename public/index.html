@@ -117,14 +117,17 @@
         var raycaster = sc.querySelector('[ar-raycaster]');
         // Note, -intersection is what the raycaster gets; the hit object gets -intersected.
         raycaster.addEventListener('raycaster-intersection', function (evt) {
-          showHUD('raycaster-intersection\n' 
-                  + JSON.stringify(evt.detail.intersections[0].point) + '\n'
-                  + evt.detail.els[0].outerHTML);
-          ball.setAttribute('position', evt.detail.intersections[0].point);
+          var point = evt.detail.intersections[0].point;
+          var el = evt.detail.els[0];
+          showHUD('raycaster-intersection\n' + JSON.stringify(point) + '\n' + el.outerHTML);
+          if (el.getAttribute('class') === 'plane') { el.setAttribute('opacity', 0.5); }
+          ball.setAttribute('position', point);
           ball.setAttribute('visible', true);
         });
         raycaster.addEventListener('raycaster-intersection-cleared', function (evt) {
-          showHUD('raycaster-intersection-cleared\n' + evt.detail.el.outerHTML);
+          var el = evt.detail.el;
+          showHUD('raycaster-intersection-cleared\n' + el.outerHTML);
+          if (el.getAttribute('class') === 'plane') { el.setAttribute('opacity', 0.2); }
           ball.setAttribute('visible', false);
         });
       }
