@@ -71,7 +71,7 @@
               return [{
                 distance: hitpoint.distanceTo(this.el.object3D.position), // Is that right point?
                 point: hitpoint, // Vector3
-                object: this.data.el || this.el
+                object: (this.data.el && this.data.el.object3D) || this.el.object3D
 /*
                 // We don't have any of these properties...
                 face: undefined, // Face3
@@ -146,7 +146,9 @@
     <a-scene ar>
       <a-sphere id="ball" radius="0.01" position="0 0.005 -0.5"></a-sphere>
       
-      <a-entity id="background" ar-raycaster></a-entity>
+      <a-entity id="background"></a-entity>
+      
+      <a-cursor id="cursor" raycaster="objects:.plane" ar-raycaster="el:#background"></a-cursor>
       
       <a-camera>
         <a-sphere id="dot" color="red" radius="0.001" position="0 0 -0.4"></a-sphere>
@@ -166,6 +168,7 @@
         if (!plane) {
           plane = document.createElement('a-box');
           plane.setAttribute('id', 'plane_' + evt.detail.id);
+          plane.setAttribute('class', 'plane');
           plane.setAttribute('color', 'red');
           plane.setAttribute('opacity', 0.2);
           plane.setAttribute('height', 0.001);
@@ -211,15 +214,15 @@
         sc.addEventListener('updateplane', onCreateOrUpdatePlane);
         sc.addEventListener('removeplane', onRemovePlane);
         
-        var background = sc.querySelector('#background');
+        var raycaster = sc.querySelector('[ar-raycaster]');
         // Note, -intersection is what the raycaster gets; the hit object gets -intersected.
-        background.addEventListener('raycaster-intersection', function (evt) {
-          showHUD('raycaster-intersection');
+        raycaster.addEventListener('raycaster-intersection', function (evt) {
+          showHUD('raycaster-intersection ' + evt.detail.els[0].outerHTML);
           ball.setAttribute('position', evt.detail.intersections[0].point);
           ball.setAttribute('visible', true);
         });
-        background.addEventListener('raycaster-intersection-cleared', function (evt) {
-          showHUD('raycaster-intersection-cleared');
+        raycaster.addEventListener('raycaster-intersection-cleared', function (evt) {
+          showHUD('raycaster-intersection-cleared ' + evt.detail.el.outerHTML);
           ball.setAttribute('visible', false);
         });
       }
