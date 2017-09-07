@@ -104,7 +104,6 @@
         <a-entity id="background"></a-entity>
         
         <!-- Declare a cursor, and what objects its raycaster hit (including AR). -->
-        <!-- FIXME: sometimes displayed planes do not match raycaster results? -->
         <a-cursor raycaster="objects:.plane; near:0.01" 
                   ar-raycaster="el:#background"></a-cursor>
 
@@ -134,9 +133,9 @@
           
           plane.insertAdjacentHTML('beforeend',
             // Add a plane label (which needs to be rotated to match a-box).
-            '<a-entity class="label" rotation="-90 0 0"></a-entity>'
+            //'<a-entity class="label" rotation="-90 0 0"></a-entity>' +
             // Add a thing to mark the center of the plane.
-          + '<a-entity thing></a-entity>');
+            '<a-entity thing></a-entity>');
         }
         
         // Update the plane.
@@ -146,7 +145,7 @@
         plane.setAttribute('rotation', evt.detail.rotation);
         // Currently, scale is always 1... 
         // plane.setAttribute('scale', evt.detail.scale);
-        
+/*        
         // Fill out the plane label with informative text. 
         plane.querySelector('.label').setAttribute('text', {
          width: plane.getAttribute('width'), 
@@ -168,9 +167,10 @@
         //+ '\nscale y: ' + plane.getAttribute('scale').y
         //+ '\nscale z: ' + plane.getAttribute('scale').z
         });
-        
+*/        
         // We updated the plane (or added it), so update the raycaster.
         // Because there may be a DOM change, we need to wait a tick.
+        // FIXME: sometimes displayed planes do not match raycaster results?
         setTimeout(function () {
           sc.querySelector('[raycaster]').components.raycaster.refreshObjects();
         });
@@ -179,10 +179,8 @@
       
       function onRemovePlane(evt) {
         var plane = sc.querySelector('#plane_' + evt.detail.id);
-        if (plane) {
-          plane.setAttribute('visible', false);
-          // FIXME: is this not cleaning up properly?
-          if (plane.parentElement) { plane.parentElement.removeChild(plane); }
+        if (plane && plane.parentElement) {
+          plane.parentElement.removeChild(plane);
         }
       }      
       
