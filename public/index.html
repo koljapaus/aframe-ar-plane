@@ -101,11 +101,11 @@
         
       <a-camera>
         <!-- A hit from AR, rather than A-Frame objects, hits this entity. -->
-        <a-entity id="background"></a-entity>
+        <a-entity id="ar-world"></a-entity>
         
         <!-- Declare a cursor, and what objects its raycaster hit (including AR). -->
         <a-cursor raycaster="objects:.plane; near:0.01" 
-                  ar-raycaster="el:#background"></a-cursor>
+                  ar-raycaster="el:#ar-world"></a-cursor>
 
         <!-- Heads-up text display. -->
         <a-text id="hud" 
@@ -133,7 +133,7 @@
           
           plane.insertAdjacentHTML('beforeend',
             // Add a plane label (which needs to be rotated to match a-box).
-            //'<a-entity class="label" rotation="-90 0 0"></a-entity>' +
+            '<a-entity class="label" rotation="-90 0 0"></a-entity>' +
             // Add a thing to mark the center of the plane.
             '<a-entity thing></a-entity>');
         }
@@ -145,7 +145,7 @@
         plane.setAttribute('rotation', evt.detail.rotation);
         // Currently, scale is always 1... 
         // plane.setAttribute('scale', evt.detail.scale);
-/*        
+        
         // Fill out the plane label with informative text. 
         plane.querySelector('.label').setAttribute('text', {
          width: plane.getAttribute('width'), 
@@ -167,7 +167,7 @@
         //+ '\nscale y: ' + plane.getAttribute('scale').y
         //+ '\nscale z: ' + plane.getAttribute('scale').z
         });
-*/        
+        
         // We updated the plane (or added it), so update the raycaster.
         // Because there may be a DOM change, we need to wait a tick.
         // FIXME: sometimes displayed planes do not match raycaster results?
@@ -194,12 +194,14 @@
         var raycaster = sc.querySelector('[ar-raycaster]');
         // Note, -intersection is what the raycaster gets; the hit object gets -intersected.
         raycaster.addEventListener('raycaster-intersection', function (evt) {
-          showHUD('raycaster-intersection ' + evt.detail.els[0].outerHTML);
+          showHUD('raycaster-intersection\n' 
+                  + JSON.stringify(evt.detail.intersections[0].point) + '\n'
+                  + evt.detail.els[0].outerHTML);
           ball.setAttribute('position', evt.detail.intersections[0].point);
           ball.setAttribute('visible', true);
         });
         raycaster.addEventListener('raycaster-intersection-cleared', function (evt) {
-          showHUD('raycaster-intersection-cleared ' + evt.detail.el.outerHTML);
+          showHUD('raycaster-intersection-cleared\n' + evt.detail.el.outerHTML);
           ball.setAttribute('visible', false);
         });
       }
