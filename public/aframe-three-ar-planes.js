@@ -30,7 +30,9 @@ AFRAME.registerComponent('three-ar-planes', {
         tempMatrix4.elements = anchor.transform;
         tempMatrix4.decompose(tempPosition, tempQuaternion, tempScale);
         tempRotation.setFromQuaternion(tempQuaternion);
-        tempRotation.scale(THREE.Math.RAD2DEG);
+        tempRotation.x *= THREE.Math.RAD2DEG;
+        tempRotation.y *= THREE.Math.RAD2DEG;
+        tempRotation.z *= THREE.Math.RAD2DEG;
         tempExtent.set(anchor.extent[0], 0, anchor.extent[1]);
         // Check if we've seen this one.
         if (this.planes[anchor.identifier]) {
@@ -84,6 +86,6 @@ AFRAME.registerComponent('three-ar-planes', {
           delete this.planes[key];
         }
       });
-    })()
-  }
+    };    
+  })()
 });

@@ -105,13 +105,13 @@
         
         <!-- Declare a cursor, and what objects its raycaster hit (including AR). -->
         <!-- FIXME: sometimes displayed planes do not match raycaster results? -->
-        <a-cursor raycaster="objects:.plane; near:0.1; far: 1000" 
+        <a-cursor raycaster="objects:.plane" 
                   ar-raycaster="el:#background"></a-cursor>
 
         <!-- Heads-up text display. -->
         <a-text id="hud" 
                 scale="0.01 0.01 0.01" position="0 -0.025 -0.1" 
-                color="red" align="center" 
+                color="yellow" align="center" 
                 value="Hi there"></a-text>
       </a-camera>
     </a-scene>    
@@ -152,7 +152,7 @@
          width: plane.getAttribute('width'), 
          height: plane.getAttribute('depth'), 
          align: 'left',
-         zOffset: 0.02,
+         zOffset: 0.01,
          wrapCount: 100, value: 
           'id: ' + plane.getAttribute('id')
         + '\nwidth: ' + plane.getAttribute('width')
@@ -186,11 +186,13 @@
         }
       }      
       
-      function addEventListeners() {
+      function addPlaneListeners() {
         sc.addEventListener('createplane', onCreateOrUpdatePlane);
         sc.addEventListener('updateplane', onCreateOrUpdatePlane);
-        sc.addEventListener('removeplane', onRemovePlane);
-        
+        sc.addEventListener('removeplane', onRemovePlane);                
+      }
+      
+      function addARRaycasterListeners() {
         var raycaster = sc.querySelector('[ar-raycaster]');
         // Note, -intersection is what the raycaster gets; the hit object gets -intersected.
         raycaster.addEventListener('raycaster-intersection', function (evt) {
@@ -202,6 +204,11 @@
           showHUD('raycaster-intersection-cleared ' + evt.detail.el.outerHTML);
           ball.setAttribute('visible', false);
         });
+      }
+      
+      function addEventListene
+        
+        addPlaneListeners();
       }
       
       function onSceneLoaded() { 
