@@ -148,10 +148,9 @@
       
       <a-entity id="background"></a-entity>
       
-      <a-cursor id="cursor" raycaster="objects:.plane" ar-raycaster="el:#background"></a-cursor>
       
       <a-camera>
-        <a-sphere id="dot" color="red" radius="0.001" position="0 0 -0.4"></a-sphere>
+        <a-cursor id="cursor" raycaster="objects:.plane" ar-raycaster="el:#background"></a-cursor>
         <a-text id="hud" 
                 scale="0.01 0.01 0.01" position="0 -0.025 -0.1" 
                 color="red" align="center" 
@@ -200,6 +199,10 @@
         + '\nscale x: ' + plane.getAttribute('scale').x
         + '\nscale y: ' + plane.getAttribute('scale').y
         + '\nscale z: ' + plane.getAttribute('scale').z
+        });
+        
+        setTimeout(function () {
+          sc.querySelector('[raycaster]').components.raycaster.refreshObjects();
         });
         return plane;
       }      
