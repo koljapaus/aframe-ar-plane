@@ -32,7 +32,8 @@
         schema: {
           x: {default: 0.5},
           y: {default: 0.5},
-          interval: { default: 100 }
+          //interval: { default: 100 }
+          el: {type: 'selector'}
         },
         
         dependencies: ['raycaster'],
@@ -42,12 +43,10 @@
           this.raycaster.intersectObjects = this.intersectObjects.bind(this);
         },
         intersectObjects: function (objects, recursive) {
-          var results = this.raycasterIntersectObjects(objects, recursive);
           // Tack on AR hit result, if any.
-          results.append(this.hitAR());
-          
-        },
-        
+          return this.raycasterIntersectObjects(objects, recursive)
+            .concat(this.hitAR());
+        },        
         hitAR: (function () {
           
           // Temporary variables, only within closure scope.
@@ -59,7 +58,7 @@
           // The desired function, which this returns.
           return function () {
             var threear = this.el.sceneEl.components['three-ar'];
-            if (!threear || !threear.arDisplay || !threear.arDisplay.hitTest) { return; }
+            if (!threear || !threear.arDisplay || !threear.arDisplay.hitTest) { return []; }
 
             var hit = threear.arDisplay.hitTest(this.data.x, this.data.y);
 
@@ -69,28 +68,21 @@
               // FIXME: really should do a raycast and only hit "ground" if missed
               transform.fromArray(hit[0].modelMatrix);
               transform.decompose(hitpoint, hitquat, hitscale);
-              this.hitEl = this.el;
-              this.el.emit('raycaster-intersection', {
-                els: [this.hitEl], 
-                intersections: [{
-                  distance: hitpoint.distanceTo(this.el.object3D.position), // Is that right point?
-                  point: hitpoint, // Vector3
-
-                  // We don't have any of these properties...
-                  face: undefined, // Face3
-                  faceIndex: undefined,
-                  index: undefined,
-                  object: undefined, // usually a Mesh
-                  uv: undefined // Vector2                
-                  }]
-              });
+              return [{
+                distance: hitpoint.distanceTo(this.el.object3D.position), // Is that right point?
+                point: hitpoint, // Vector3
+                object: this.data.el || this.el
+/*
+                // We don't have any of these properties...
+                face: undefined, // Face3
+                faceIndex: undefined,
+                index: undefined,
+                object: undefined, // usually a Mesh
+                uv: undefined // Vector2                
+*/                  
+                }];
             } else {
-              // No longer hit.
-              if (this.hitEl) {
-                var wasHitEl = this.hitEl;
-                delete this.hitEl;
-                this.el.emit('raycaster-intersection-cleared', {el: wasHitEl});
-              }
+              return [];
             }         
           }        
         })()
