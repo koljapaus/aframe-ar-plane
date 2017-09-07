@@ -105,7 +105,8 @@
         
         <!-- Declare a cursor, and what objects its raycaster hit (including AR). -->
         <!-- FIXME: sometimes displayed planes do not match raycaster results? -->
-        <a-cursor raycaster="objects:.plane" ar-raycaster="el:#background"></a-cursor>
+        <a-cursor raycaster="objects:.plane; near:0.1; far: 1000" 
+                  ar-raycaster="el:#background"></a-cursor>
 
         <!-- Heads-up text display. -->
         <a-text id="hud" 
@@ -122,13 +123,13 @@
       function onCreateOrUpdatePlane(evt) {
         var plane = sc.querySelector('#plane_' + evt.detail.id);
         if (!plane) {
-
+          // Create and append the plane.
           plane = document.createElement('a-box');
           plane.setAttribute('id', 'plane_' + evt.detail.id);
           plane.setAttribute('class', 'plane');
           plane.setAttribute('color', 'red');
           plane.setAttribute('opacity', 0.2);
-          plane.setAttribute('height', 0.01);
+          plane.setAttribute('height', 0.001);
           sc.appendChild(plane);
           
           plane.insertAdjacentHTML('beforeend',
@@ -143,13 +144,15 @@
         plane.setAttribute('depth', evt.detail.extent.z);
         plane.setAttribute('position', evt.detail.position);
         plane.setAttribute('rotation', evt.detail.rotation);
-        plane.setAttribute('scale', evt.detail.scale);
+        // Currently, scale is always 1... 
+        // plane.setAttribute('scale', evt.detail.scale);
         
         // Fill out the plane label with informative text. 
         plane.querySelector('.label').setAttribute('text', {
          width: plane.getAttribute('width'), 
          height: plane.getAttribute('depth'), 
          align: 'left',
+         zOffset: 0.02,
          wrapCount: 100, value: 
           'id: ' + plane.getAttribute('id')
         + '\nwidth: ' + plane.getAttribute('width')
@@ -160,9 +163,10 @@
         + '\nrotation x: ' + plane.getAttribute('rotation').x
         + '\nrotation y: ' + plane.getAttribute('rotation').y
         + '\nrotation z: ' + plane.getAttribute('rotation').z
-        + '\nscale x: ' + plane.getAttribute('scale').x
-        + '\nscale y: ' + plane.getAttribute('scale').y
-        + '\nscale z: ' + plane.getAttribute('scale').z
+        // Currently, scale is always 1... 
+        //+ '\nscale x: ' + plane.getAttribute('scale').x
+        //+ '\nscale y: ' + plane.getAttribute('scale').y
+        //+ '\nscale z: ' + plane.getAttribute('scale').z
         });
         
         // We updated the plane (or added it), so update the raycaster.
@@ -175,7 +179,11 @@
       
       function onRemovePlane(evt) {
         var plane = sc.querySelector('#plane_' + evt.detail.id);
-        if (plane && plane.parentElement) { plane.parentElement.removeChild(plane); }
+        if (plane) {
+          plane.setAttribute('visible', false);
+          // FIXME: is this not cleaning up properly?
+          if (plane.parentElement) { plane.parentElement.removeChild(plane); }
+        }
       }      
       
       function addEventListeners() {
