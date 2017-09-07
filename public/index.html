@@ -23,11 +23,8 @@
     </script>
 
     <script>
-      // May want to try alternative approach where
-      // ar-raycaster responds to raycast-intersection-cleared
-      // (from normal raycaster)
-      // by trying AR hit instead...
-      // but current exposed API does not support ray orientation as input.
+      // ar-raycaster modifies raycaster to append AR hit, if any.
+      // But note that current AR hit API does not support orientation as input.
       AFRAME.registerComponent('ar-raycaster', {      
         dependencies: ['raycaster'],
         
@@ -103,9 +100,14 @@
       <a-sphere id="ball" radius="0.01" position="0 0.005 -0.5"></a-sphere>
         
       <a-camera>
-        <!-- A hit from AR, rather than from the 
+        <!-- A hit from AR, rather than A-Frame objects, hits this entity. -->
         <a-entity id="background"></a-entity>
-        <a-cursor id="cursor" raycaster="objects:.plane" ar-raycaster="el:#background"></a-cursor>
+        
+        <!-- Declare a cursor, and what objects its raycaster hit (including AR). -->
+        <!-- FIXME: sometimes displayed planes do not match raycaster results? -->
+        <a-cursor raycaster="objects:.plane" ar-raycaster="el:#background"></a-cursor>
+
+        <!-- Heads-up text display. -->
         <a-text id="hud" 
                 scale="0.01 0.01 0.01" position="0 -0.025 -0.1" 
                 color="red" align="center" 
@@ -120,23 +122,30 @@
       function onCreateOrUpdatePlane(evt) {
         var plane = sc.querySelector('#plane_' + evt.detail.id);
         if (!plane) {
+
           plane = document.createElement('a-box');
           plane.setAttribute('id', 'plane_' + evt.detail.id);
           plane.setAttribute('class', 'plane');
           plane.setAttribute('color', 'red');
           plane.setAttribute('opacity', 0.2);
-          plane.setAttribute('height', 0.001);
+          plane.setAttribute('height', 0.01);
           sc.appendChild(plane);
           
-          plane.insertAdjacentHTML('beforeend', 
-            '<a-entity class="label" rotation="-90 0 0"></a-entity><a-entity thing></a-entity>');
+          plane.insertAdjacentHTML('beforeend',
+            // Add a plane label (which needs to be rotated to match a-box).
+            '<a-entity class="label" rotation="-90 0 0"></a-entity>'
+            // Add a thing to mark the center of the plane.
+          + '<a-entity thing></a-entity>');
         }
+        
+        // Update the plane.
         plane.setAttribute('width', evt.detail.extent.x);
         plane.setAttribute('depth', evt.detail.extent.z);
         plane.setAttribute('position', evt.detail.position);
         plane.setAttribute('rotation', evt.detail.rotation);
         plane.setAttribute('scale', evt.detail.scale);
         
+        // Fill out the plane label with informative text. 
         plane.querySelector('.label').setAttribute('text', {
          width: plane.getAttribute('width'), 
          height: plane.getAttribute('depth'), 
@@ -156,6 +165,8 @@
         + '\nscale z: ' + plane.getAttribute('scale').z
         });
         
+        // We updated the plane (or added it), so update the raycaster.
+        // Because there may be a DOM change, we need to wait a tick.
         setTimeout(function () {
           sc.querySelector('[raycaster]').components.raycaster.refreshObjects();
         });
