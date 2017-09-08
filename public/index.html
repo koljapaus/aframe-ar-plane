@@ -138,6 +138,9 @@
       }
       
       function onSceneLoaded() { 
+        var tempScale = new THREE.Vector3();
+        var tempMat4 = new THREE.Matrix4();
+        
         // may not have arDisplay until tick after loaded
         window.addEventListener('click', function() {
           var ardisplay = sc.components['three-ar'].arDisplay;
@@ -145,21 +148,30 @@
             var planes = ardisplay.getPlanes ? ardisplay.getPlanes() : ardisplay.anchors_;
             var msg = planes.length + ':\n\n';
             planes.forEach(function (plane) {
-              // force conformance
+              // Force draft ARCore conformance to latest spec.
               if (!plane.identifier) { plane.identifier = plane.id; }
-              var planePosition = plane.position || new THREE.Vector3();
-              var planeOrientation = plane.orientation || new THREE.Quaternion();
-              var tempScale = new THREE.Vector3();
-              if (plane.transform) 
+              
+              // Unify handling for position and orientation.
+              var planePosition = new THREE.Vector3();
+              var planeOrientation = new THREE.Quaternion();
+              if (plane.transform) { 
+                // ARKit                
+                tempMat4.fromArray(plane.transform);
+                tempMat4.decompose(planePosition, planeOrientation, tempScale);
+              } else {
+                // ARCore
+                planePosition.fromArray(plane.position);
+                planeOrientation.fromArray(plane.orientation);
+              }
+              
+              // Write out what we got.
               msg += 
-              'id: ' + plane.id + '\n' + // draft ARCore (not to latest spec)
-              'identifier: ' + plane.identifier + '\n' + // ARKit
-              'transform: ' + plane.transform + '\n' + // ARKit
-              'position: ' + plane.position + '\n' + // draft ARCore
-              'orientation: ' + plane.orientation + '\n' + // draft ARCore
-              'extent: ' + plane.extent + '\n' + // common
+              'identifier: ' + plane.identifier + '\n' + // string, per latest spec
+              'position: ' + planePosition + '\n' + // unified to THREE.Vector3
+              'orientation: ' + planeOrientation + '\n' + // unified to THREE.Quaternion
+              'extent: ' + plane.extent + '\n' + // number[2], per latest spec
               'polygon: ' + plane.polygon + '\n' + // draft ARCore (not to latest spec)
-              //'vertices: ' + plane.vertices + '\n' +
+              //'vertices: ' + plane.vertices + '\n' + // number[3*n], per latest spec
               '\n';
             });
             showHUD(msg);
