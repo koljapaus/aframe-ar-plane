@@ -147,7 +147,7 @@
           var ardisplay = sc.components['three-ar'].arDisplay;
           if (!ardisplay) { showHUD('no ardisplay?'); } else {
             var planes = ardisplay.getPlanes ? ardisplay.getPlanes() : ardisplay.anchors_;
-            var msg = planes.length + ':\n\n';
+            // Force plane conformance to common spec (almost latest spec).
             planes.forEach(function (plane) {
               // Force draft ARCore conformance to latest spec.
               if (!plane.identifier) { plane.identifier = plane.id; }
@@ -155,8 +155,11 @@
               
               // Unify position and orientation into vector3 and quaternion.                                      
               // Compute unification (since we have to assume it may be updated.)
+              // Note that although it is possible to construct the arrays for
+              // position and orientation from transform, it's not worth it,
+              // since we will want to use vector3 and quaternion anyway.
               if (!plane.vector3) { plane.vector3 = new THREE.Vector3(); }
-              if (!plane.quaternion) { plane.quaternion = new THREE.Quaternion();
+              if (!plane.quaternion) { plane.quaternion = new THREE.Quaternion(); }
               if (plane.transform) { 
                 // ARKit                
                 tempMat4.fromArray(plane.transform);
@@ -166,7 +169,10 @@
                 plane.vector3.fromArray(plane.position);
                 plane.quaternion.fromArray(plane.orientation);
               }
+            });
               
+            var msg = planes.length + ':\n\n';
+            planes.forEach(function (plane) {              
               // Write out what we got, for debugging.
               msg += 
               'identifier: ' + plane.identifier + '\n' + // string, per latest spec
