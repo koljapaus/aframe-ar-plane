@@ -114,9 +114,15 @@ AFRAME.registerGeometry('polygon', {
         }
         
         // Update the bounding box.
-        plane.setAttribute('line__1', {start: x: evt.detail.extent.x / 2.0, y: 0.25, z: evt.detail.extent.z / 2.0});
-        var post2 = plane.querySelector('.post2');
-        post2.setAttribute('position', {x: -evt.detail.extent.x / 2.0, y: 0.25, z: -evt.detail.extent.z / 2.0});
+        var v1 = {x: evt.detail.extent.x / 2.0, y: 0, z: evt.detail.extent.z / 2.0};
+        var v2 = {x: -evt.detail.extent.x / 2.0, y: 0, z: evt.detail.extent.z / 2.0};
+        var v3 = {x: -evt.detail.extent.x / 2.0, y: 0, z: -evt.detail.extent.z / 2.0};
+        var v4 = {x: evt.detail.extent.x / 2.0, y: 0, z: -evt.detail.extent.z / 2.0};
+
+        plane.setAttribute('line__1', {start: v1, end: v2});
+        plane.setAttribute('line__2', {start: v2, end: v3});
+        plane.setAttribute('line__3', {start: v3, end: v4});
+        plane.setAttribute('line__4', {start: v4, end: v1});
         
         if (navigator.userAgent.indexOf('Android') >= 0) {
           // HACK for current draft APK -- Z->Y, Y->X, X->Z...
