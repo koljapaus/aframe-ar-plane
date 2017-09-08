@@ -139,10 +139,23 @@
       
       function onSceneLoaded() { 
         // may not have arDisplay until tick after loaded
-        setTimeout(function() {
+        window.addEventListener('click', function() {
           var threear = sc.components['three-ar'];
           if (!threear) { showHUD('no threear?'); } else {
-            showHUD(threear.arDisplay);
+            var planes = threear.arDisplay.getPlanes();
+            var msg = planes.length + ':\n\n';
+            planes.forEach(function (plane) {
+              msg += 
+              'id: ' + plane.id + '\n' +
+              //'identifier: ' + plane.identifier + '\n' +
+              'position: ' + plane.position + '\n' +
+              'orientation: ' + plane.orientation + '\n' +
+              'extent: ' + plane.extent + '\n' +
+              'polygon: ' + plane.polygon + '\n' +
+              //'vertices: ' + plane.vertices + '\n' +
+              '\n';
+            });
+            showHUD(msg);
           }
         });
         
