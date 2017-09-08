@@ -199,6 +199,7 @@
               // HACK: take Z and make it Y, zero the others
               plane.rotation.x = 0;
               plane.rotation.y = plane.rotation.z;
+              plane.rotation.z = plane.rotation.x;
               plane.rotation.z = 0;
               
               if (plane.rotation.x) { plane.rotation.x *= THREE.Math.RAD2DEG; }
