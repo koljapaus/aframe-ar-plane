@@ -20,20 +20,24 @@
     </script>
     
     <script>
-AFRAME.registerGeometry('example', {
+AFRAME.registerGeometry('polygon', {
   schema: {
     stride: { default: 3 },
-    vertices: { default: [-10,10,0, -10,-10,0, 10,-10,0] }
+    vertices: { default: [-1,1,0, -1,-1,0, 1,-1,0] }
   },
   
   init: function (data) {
     var geometry = new THREE.Geometry();
-    geometry.vertices = [];
-    for (var i=0; (i+2)<data.vertices.length; i += stride) {
+    var i;
+    for (i = 0; (i+2) < data.vertices.length; i += stride) {
       geometry.vertices.push(new THREE.Vector3(data.vertices[i], data.vertices[i+1], data.vertices[i+2]));
     }
     geometry.computeBoundingBox();
-    geometry.faces.push(new THREE.Face3(0, 1, 2));
+    // generate faces - this makes a triangle fan, from the first +Y point around
+    for (i = 0; i < geometry.vertices.length - 2; i++)
+    {
+      geo.faces.push(new THREE.Face3(0, i + 1, i + 2));
+    }
     geometry.mergeVertices();
     geometry.computeFaceNormals();
     geometry.computeVertexNormals();
@@ -102,7 +106,11 @@ AFRAME.registerGeometry('example', {
         plane.setAttribute('position', evt.detail.position);
         var rotation = new THREE.Vector3().copy(evt.detail.rotation);
         
-        // update the corner posts
+        // If we have vertices, use polygon geometry
+        if (evt.detail.vertices) {
+          plane.setAttribute('geometry')
+        }
+        // Update the corner posts
         var post1 = plane.querySelector('.post1');
         post1.setAttribute('position', {x: evt.detail.extent.x / 2.0, y: 0.25, z: evt.detail.extent.z / 2.0});
         var post2 = plane.querySelector('.post2');
