@@ -43,9 +43,13 @@
       function showHUD(msg) { sc.querySelector('#hud').setAttribute('value', msg); }
       
       function onCreateOrUpdatePlane(evt) {
+        console.log('onCreateOrUpdatePlane ' + evt.detail.id);
+        var created = false;
         var plane = sc.querySelector('#plane_' + evt.detail.id);
         if (!plane) {
+          console.log('... creating ' + evt.detail.id);
           // Create and append the plane.
+          created = true;
           plane = document.createElement('a-box');
           plane.setAttribute('id', 'plane_' + evt.detail.id);
           plane.setAttribute('class', 'plane');
@@ -69,7 +73,8 @@
         // Currently, scale is always 1... 
         // plane.setAttribute('scale', evt.detail.scale);
         
-        // Fill out the plane label with informative text. 
+        // Fill out the plane label with informative text.
+        // DETAIL: when creating, getAttribute doesn't work this tick
         plane.querySelector('.label').setAttribute('text', {
          width: plane.getAttribute('width'), 
          height: plane.getAttribute('depth'), 
@@ -94,13 +99,18 @@
         // We updated the plane (or added it), so update the raycaster.
         // Because there may be a DOM change, we need to wait a tick.
         // FIXME: sometimes displayed planes do not match raycaster results?
-        setTimeout(function () {
-          sc.querySelector('[raycaster]').components.raycaster.refreshObjects();
-        });
+        if (created) {
+          setTimeout(function () {
+            sc.querySelector('[raycaster]').components.raycaster.refreshObjects();
+          });
+        } else {
+          sc.querySelector('[raycaster]').components.raycaster.refreshObjects();          
+        }
         return plane;
       }      
       
       function onRemovePlane(evt) {
+        console.log('onRemovePlane ' + evt.detail.id);
         var plane = sc.querySelector('#plane_' + evt.detail.id);
         if (plane && plane.parentElement) {
           plane.parentElement.removeChild(plane);
