@@ -171,15 +171,15 @@
               }
             });
               
-            var msg = planes.length + ':\n\n';
+            var msg = planes.length + '(vs. ' + ardisplay.planes:\n\n';
             planes.forEach(function (plane) {              
               // Write out what we got, for debugging.
               msg += 
-              'identifier: ' + plane.identifier + '\n' + // string, per latest spec
-              'vector3: ' + JSON.stringify(plane.vector3) + '\n' + // unified to THREE.Vector3
-              'quaternion: ' + JSON.stringify(plane.quaternion) + '\n' + // unified to THREE.Quaternion
-              'extent: ' + plane.extent + '\n' + // number[2], per latest spec
-              'vertices: ' + plane.vertices + '\n' + // number[3*n], per latest spec
+              'identifier: ' + plane.identifier + '' + // string, per latest spec
+              ' ' + JSON.stringify(plane.vector3) + '' + // unified to THREE.Vector3
+              ' ' + JSON.stringify(plane.rotation) + '' + // unified to THREE.Quaternion
+              ' ' + plane.extent + '' + // number[2], per latest spec
+              //'vertices: ' + plane.vertices + '\n' + // number[3*n], per latest spec
               '\n';
             });
             showHUD(msg);
