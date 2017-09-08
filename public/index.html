@@ -138,11 +138,14 @@
       }
       
       function onSceneLoaded() { 
-        var threear = AFRAME.scenes[0].components['three-ar'];
-        if (!threear) { showHUD('no threear?'); } else {
-          showHUD(Object.keys(threear.arDisplay).join(','));
-        }
-
+        // may not have arDisplay until tick after loaded
+        setTimeout(function() {
+          var threear = sc.components['three-ar'];
+          if (!threear) { showHUD('no threear?'); } else {
+            showHUD(threear.arDisplay);
+          }
+        });
+        
         addEventListeners(); 
       }
       
