@@ -67,7 +67,8 @@
         plane.setAttribute('width', evt.detail.extent.x);
         plane.setAttribute('depth', evt.detail.extent.z);
         plane.setAttribute('position', evt.detail.position);
-        plane.setAttribute('rotation', evt.detail.rotation);
+        var rotation = new THREE.Vector3().copy(evt.detail.rotation);
+        plane.setAttribute('rotation', rotation);
         // Currently, scale is always 1... 
         // plane.setAttribute('scale', evt.detail.scale);
         
