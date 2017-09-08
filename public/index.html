@@ -69,6 +69,15 @@
         plane.setAttribute('depth', evt.detail.extent.z);
         plane.setAttribute('position', evt.detail.position);
         var rotation = new THREE.Vector3().copy(evt.detail.rotation);
+        
+        if (navigator.userAgent.indexOf('Android') >= 0) {
+          // HACK for current draft APK -- Z->Y, Y->X, X->Z...
+          var temp = rotation.y;
+          rotation.y = rotation.z;
+          rotation.z = rotation.x;
+          rotation.x = temp;
+        }
+        
         plane.setAttribute('rotation', rotation);
         // Currently, scale is always 1... 
         // plane.setAttribute('scale', evt.detail.scale);
@@ -192,15 +201,17 @@
               } else {
                 // ARCore
                 plane.vector3.fromArray(plane.position);
-                plane.quaternion.fromArray(plane.orientation).normalize();
+                plane.quaternion.fromArray(plane.orientation);
               }
               plane.rotation.setFromQuaternion(plane.quaternion);
               
-              // HACK: take Z and make it Y, zero the others
-              plane.rotation.x = 0;
-              plane.rotation.y = plane.rotation.z;
-              plane.rotation.z = plane.rotation.x;
-              plane.rotation.z = 0;
+              if (navigator.userAgent.indexOf('Android') >= 0) {
+                // HACK for current draft APK -- Z->Y, Y->X, X->Z...
+                var temp = plane.rotation.x;
+                plane.rotation.y = plane.rotation.z;
+                plane.rotation.z = plane.rotation.x;
+                plane.rotation.x = temp;
+              }
               
               if (plane.rotation.x) { plane.rotation.x *= THREE.Math.RAD2DEG; }
               if (plane.rotation.y) { plane.rotation.y *= THREE.Math.RAD2DEG; }
