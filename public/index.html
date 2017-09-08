@@ -140,18 +140,25 @@
       function onSceneLoaded() { 
         // may not have arDisplay until tick after loaded
         window.addEventListener('click', function() {
-          var threear = sc.components['three-ar'];
-          if (!threear) { showHUD('no threear?'); } else {
-            var planes = threear.arDisplay.getPlanes();
+          var ardisplay = sc.components['three-ar'].arDisplay;
+          if (!ardisplay) { showHUD('no ardisplay?'); } else {
+            var planes = ardisplay.getPlanes ? ardisplay.getPlanes() : ardisplay.anchors_;
             var msg = planes.length + ':\n\n';
             planes.forEach(function (plane) {
+              // force conformance
+              if (!plane.identifier) { plane.identifier = plane.id; }
+              var planePosition = plane.position || new THREE.Vector3();
+              var planeOrientation = plane.orientation || new THREE.Quaternion();
+              var tempScale = new THREE.Vector3();
+              if (plane.transform) 
               msg += 
-              'id: ' + plane.id + '\n' +
-              //'identifier: ' + plane.identifier + '\n' +
-              'position: ' + plane.position + '\n' +
-              'orientation: ' + plane.orientation + '\n' +
-              'extent: ' + plane.extent + '\n' +
-              'polygon: ' + plane.polygon + '\n' +
+              'id: ' + plane.id + '\n' + // draft ARCore (not to latest spec)
+              'identifier: ' + plane.identifier + '\n' + // ARKit
+              'transform: ' + plane.transform + '\n' + // ARKit
+              'position: ' + plane.position + '\n' + // draft ARCore
+              'orientation: ' + plane.orientation + '\n' + // draft ARCore
+              'extent: ' + plane.extent + '\n' + // common
+              'polygon: ' + plane.polygon + '\n' + // draft ARCore (not to latest spec)
               //'vertices: ' + plane.vertices + '\n' +
               '\n';
             });
