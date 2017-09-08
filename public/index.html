@@ -171,7 +171,7 @@
               }
             });
               
-            var msg = planes.length + '(vs. ' + ardisplay.planes:\n\n';
+            var msg = planes.length + '(vs. ' + Object.keys(sc.components['three-ar-planes'].planes).join(',') + '):\n\n';
             planes.forEach(function (plane) {              
               // Write out what we got, for debugging.
               msg += 
