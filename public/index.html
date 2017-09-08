@@ -141,6 +141,7 @@
         var tempScale = new THREE.Vector3();
         var tempMat4 = new THREE.Matrix4();
         
+        // Show plane info on click.
         // may not have arDisplay until tick after loaded
         window.addEventListener('click', function() {
           var ardisplay = sc.components['three-ar'].arDisplay;
@@ -150,28 +151,29 @@
             planes.forEach(function (plane) {
               // Force draft ARCore conformance to latest spec.
               if (!plane.identifier) { plane.identifier = plane.id; }
+              if (plane.polygon) { plane.vertices = plane.polygon; }
               
-              // Unify handling for position and orientation.
-              var planePosition = new THREE.Vector3();
-              var planeOrientation = new THREE.Quaternion();
+              // Unify position and orientation into vector3 and quaternion.                                      
+              // Compute unification (since we have to assume it may be updated.)
+              if (!plane.vector3) { plane.vector3 = new THREE.Vector3(); }
+              if (!plane.quaternion) { plane.quaternion = new THREE.Quaternion();
               if (plane.transform) { 
                 // ARKit                
                 tempMat4.fromArray(plane.transform);
-                tempMat4.decompose(planePosition, planeOrientation, tempScale);
+                tempMat4.decompose(plane.vector3, plane.quaternion, tempScale);
               } else {
                 // ARCore
-                planePosition.fromArray(plane.position);
-                planeOrientation.fromArray(plane.orientation);
+                plane.vector3.fromArray(plane.position);
+                plane.quaternion.fromArray(plane.orientation);
               }
               
-              // Write out what we got.
+              // Write out what we got, for debugging.
               msg += 
               'identifier: ' + plane.identifier + '\n' + // string, per latest spec
-              'position: ' + planePosition + '\n' + // unified to THREE.Vector3
-              'orientation: ' + planeOrientation + '\n' + // unified to THREE.Quaternion
+              'vector3: ' + JSON.stringify(plane.vector3) + '\n' + // unified to THREE.Vector3
+              'quaternion: ' + JSON.stringify(plane.quaternion) + '\n' + // unified to THREE.Quaternion
               'extent: ' + plane.extent + '\n' + // number[2], per latest spec
-              'polygon: ' + plane.polygon + '\n' + // draft ARCore (not to latest spec)
-              //'vertices: ' + plane.vertices + '\n' + // number[3*n], per latest spec
+              'vertices: ' + plane.vertices + '\n' + // number[3*n], per latest spec
               '\n';
             });
             showHUD(msg);
