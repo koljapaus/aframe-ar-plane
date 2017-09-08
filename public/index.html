@@ -43,11 +43,9 @@
       function showHUD(msg) { sc.querySelector('#hud').setAttribute('value', msg); }
       
       function onCreateOrUpdatePlane(evt) {
-        console.log('onCreateOrUpdatePlane ' + evt.detail.id);
         var created = false;
         var plane = sc.querySelector('#plane_' + evt.detail.id);
         if (!plane) {
-          console.log('... creating ' + evt.detail.id);
           // Create and append the plane.
           created = true;
           plane = document.createElement('a-box');
@@ -76,20 +74,20 @@
         // Fill out the plane label with informative text.
         // DETAIL: when creating, getAttribute doesn't work this tick
         plane.querySelector('.label').setAttribute('text', {
-         width: plane.getAttribute('width'), 
-         height: plane.getAttribute('depth'), 
+         width: evt.detail.extent.x, 
+         height: evt.detail.extent.z, 
          align: 'left',
          zOffset: 0.01,
          wrapCount: 100, value: 
-          'id: ' + plane.getAttribute('id')
-        + '\nwidth: ' + plane.getAttribute('width')
-        + '\ndepth: ' + plane.getAttribute('depth')
-        + '\nposition x: ' + plane.getAttribute('position').x
-        + '\nposition y: ' + plane.getAttribute('position').y
-        + '\nposition z: ' + plane.getAttribute('position').z
-        + '\nrotation x: ' + plane.getAttribute('rotation').x
-        + '\nrotation y: ' + plane.getAttribute('rotation').y
-        + '\nrotation z: ' + plane.getAttribute('rotation').z
+          'id: ' + evt.detail.id
+        + '\nwidth: ' + evt.detail.extent.x
+        + '\ndepth: ' + evt.detail.extent.z
+        + '\nposition x: ' + evt.detail.position.x
+        + '\nposition y: ' + evt.detail.position.y
+        + '\nposition z: ' + evt.detail.position.z
+        + '\nrotation x: ' + evt.detail.rotation.x
+        + '\nrotation y: ' + evt.detail.rotation.y
+        + '\nrotation z: ' + evt.detail.rotation.z
         // Currently, scale is always 1... 
         //+ '\nscale x: ' + plane.getAttribute('scale').x
         //+ '\nscale y: ' + plane.getAttribute('scale').y
@@ -98,7 +96,6 @@
         
         // We updated the plane (or added it), so update the raycaster.
         // Because there may be a DOM change, we need to wait a tick.
-        // FIXME: sometimes displayed planes do not match raycaster results?
         if (created) {
           setTimeout(function () {
             sc.querySelector('[raycaster]').components.raycaster.refreshObjects();
@@ -170,6 +167,7 @@
               // since we will want to use vector3 and quaternion anyway.
               if (!plane.vector3) { plane.vector3 = new THREE.Vector3(); }
               if (!plane.quaternion) { plane.quaternion = new THREE.Quaternion(); }
+              if (!plane.rotation) { plane.rotation = new THREE.Euler(0,0,0,'YXZ'); }
               if (plane.transform) { 
                 // ARKit                
                 tempMat4.fromArray(plane.transform);
@@ -179,6 +177,10 @@
                 plane.vector3.fromArray(plane.position);
                 plane.quaternion.fromArray(plane.orientation);
               }
+              plane.rotation.setFromQuaternion(plane.quaternion);
+              if (plane.rotation.x) { plane.rotation.x *= THREE.Math.RAD2DEG; }
+              if (plane.rotation.y) { plane.rotation.y *= THREE.Math.RAD2DEG; }
+              if (plane.rotation.z) { plane.rotation.z *= THREE.Math.RAD2DEG; }
             });
               
             var msg = planes.length + '(vs. ' + Object.keys(sc.components['three-ar-planes'].planes).join(',') + '):\n\n';
