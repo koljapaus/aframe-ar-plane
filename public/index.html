@@ -194,7 +194,13 @@
                 plane.vector3.fromArray(plane.position);
                 plane.quaternion.fromArray(plane.orientation).normalize();
               }
-              plane.rotation.setFromQuaternion(plane.quaternion, 'ZXY');
+              plane.rotation.setFromQuaternion(plane.quaternion);
+              
+              // HACK: take Z and make it Y, zero the others
+              plane.rotation.x = 0;
+              plane.rotation.y = plane.rotation.z;
+              plane.rotation.z = 0;
+              
               if (plane.rotation.x) { plane.rotation.x *= THREE.Math.RAD2DEG; }
               if (plane.rotation.y) { plane.rotation.y *= THREE.Math.RAD2DEG; }
               if (plane.rotation.z) { plane.rotation.z *= THREE.Math.RAD2DEG; }
