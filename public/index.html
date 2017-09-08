@@ -47,6 +47,9 @@
       function onCreateOrUpdatePlane(evt) {
         var created = false;
         var plane = sc.querySelector('#plane_' + evt.detail.id);
+        
+        // try always recreating plane (bleah) since some changes doo
+        
         if (!plane) {
           // Create and append the plane.
           created = true;
