@@ -48,8 +48,6 @@
         var created = false;
         var plane = sc.querySelector('#plane_' + evt.detail.id);
         
-        // try always recreating plane (bleah) since some changes doo
-        
         if (!plane) {
           // Create and append the plane.
           created = true;
@@ -65,6 +63,10 @@
           plane.insertAdjacentHTML('beforeend',
             // Add a plane label (which needs to be rotated to match a-box).
             '<a-entity class="label" rotation="-90 0 0"></a-entity>' +
+            // Add a corner post.
+            '<a-entity class="post1" geometry="primitive:box; width:0.1; depth:0.1; height:0.5"></a-entity>' +
+            // Add another corner post.
+            '<a-entity class="post2" geometry="primitive:box; width:0.1; depth:0.1; height:0.5"></a-entity>' +
             // Add a thing to mark the center of the plane.
             '<a-entity thing></a-entity>');
         }
@@ -74,6 +76,12 @@
         plane.setAttribute('depth', evt.detail.extent.z);
         plane.setAttribute('position', evt.detail.position);
         var rotation = new THREE.Vector3().copy(evt.detail.rotation);
+        
+        // update the corner posts
+        var post1 = plane.querySelector('.post1');
+        post1.setAttribute('position', {x: evt.detail.extent.x / 2.0, y: 0.25, z: evt.detail.extent.z / 2.0});
+        var post2 = plane.querySelector('.post2');
+        post2.setAttribute('position', {x: -evt.detail.extent.x / 2.0, y: 0.25, z: -evt.detail.extent.z / 2.0});
         
         if (navigator.userAgent.indexOf('Android') >= 0) {
           // HACK for current draft APK -- Z->Y, Y->X, X->Z...
