@@ -6,7 +6,7 @@
     <meta name="description" content="Hello, World! • A-Frame three.ar.js">
     <script src="https://aframe.io/releases/0.6.1/aframe.min.js"></script>
     <script src="https://rawgit.com/google-ar/three.ar.js/master/dist/three.ar.js"></script>
-    <script src="https://rawgit.com/chenzlabs/aframe-ar/experimental-planes/dist/aframe-ar.js"></script>
+    <script src="https://rawgit.com/chenzlabs/aframe-ar/ac3deea/dist/aframe-ar.js"></script>
   </head>
   <body>    
     <script>
@@ -192,9 +192,9 @@
               } else {
                 // ARCore
                 plane.vector3.fromArray(plane.position);
-                plane.quaternion.fromArray(plane.orientation);
+                plane.quaternion.fromArray(plane.orientation).normalize();
               }
-              plane.rotation.setFromQuaternion(plane.quaternion);
+              plane.rotation.setFromQuaternion(plane.quaternion, 'ZXY');
               if (plane.rotation.x) { plane.rotation.x *= THREE.Math.RAD2DEG; }
               if (plane.rotation.y) { plane.rotation.y *= THREE.Math.RAD2DEG; }
               if (plane.rotation.z) { plane.rotation.z *= THREE.Math.RAD2DEG; }
