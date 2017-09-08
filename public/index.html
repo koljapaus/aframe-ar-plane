@@ -85,17 +85,19 @@ AFRAME.registerGeometry('polygon', {
           plane.setAttribute('class', 'plane');
           plane.setAttribute('color', colorToUse); //'red');
           plane.setAttribute('opacity', 0.3);
-          plane.setAttribute('material', 'shader:grid')
+          plane.setAttribute('material', 'shader:grid;side:double')
           plane.setAttribute('height', 0.001);
           sc.appendChild(plane);
+          
+          // Add lines for bounding box.
+          plane.setAttribute('line__1', {color: colorToUse});
+          plane.setAttribute('line__2', {color: colorToUse});
+          plane.setAttribute('line__3', {color: colorToUse});
+          plane.setAttribute('line__4', {color: colorToUse});
           
           plane.insertAdjacentHTML('beforeend',
             // Add a plane label (which needs to be rotated to match a-box).
             '<a-entity class="label" rotation="-90 0 0"></a-entity>' +
-            // Add a corner post.
-            '<a-entity class="post1" material="color:' + colorToUse + '" geometry="primitive:box; width:0.1; depth:0.1; height:0.5"></a-entity>' +
-            // Add another corner post.
-            '<a-entity class="post2" material="color:' + colorToUse + '" geometry="primitive:box; width:0.1; depth:0.1; height:0.5"></a-entity>' +
             // Add a thing to mark the center of the plane.
             '<a-entity thing></a-entity>');
         }
@@ -108,11 +110,11 @@ AFRAME.registerGeometry('polygon', {
         
         // If we have vertices, use polygon geometry
         if (evt.detail.vertices) {
-          plane.setAttribute('geometry', {primitive: 'polygon', vertices: evt.detail.vertices});
+          plane.setAttribute('geometry', 'primitive:polygon; vertices:' + evt.detail.vertices.join(','));
         }
-        // Update the corner posts
-        var post1 = plane.querySelector('.post1');
-        post1.setAttribute('position', {x: evt.detail.extent.x / 2.0, y: 0.25, z: evt.detail.extent.z / 2.0});
+        
+        // Update the bounding box.
+        plane.setAttribute('line__1', {start: x: evt.detail.extent.x / 2.0, y: 0.25, z: evt.detail.extent.z / 2.0});
         var post2 = plane.querySelector('.post2');
         post2.setAttribute('position', {x: -evt.detail.extent.x / 2.0, y: 0.25, z: -evt.detail.extent.z / 2.0});
         
