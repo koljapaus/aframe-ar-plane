@@ -90,10 +90,10 @@ AFRAME.registerGeometry('polygon', {
           sc.appendChild(plane);
           
           // Add lines for bounding box.
-          plane.setAttribute('line__1', {color: colorToUse});
-          plane.setAttribute('line__2', {color: colorToUse});
-          plane.setAttribute('line__3', {color: colorToUse});
-          plane.setAttribute('line__4', {color: colorToUse});
+          plane.setAttribute('line__1', {color: colorToUse, opacity:0.7});
+          plane.setAttribute('line__2', {color: colorToUse, opacity:0.7});
+          plane.setAttribute('line__3', {color: colorToUse, opacity:0.7});
+          plane.setAttribute('line__4', {color: colorToUse, opacity:0.7});
           
           plane.insertAdjacentHTML('beforeend',
             // Add a plane label (which needs to be rotated to match a-box).
@@ -117,11 +117,11 @@ AFRAME.registerGeometry('polygon', {
         // Update the bounding box.
         var dx2 = evt.detail.extent.x / 2.0;
         var dy2 = evt.detail.extent.y / 2.0;
-
-        plane.setAttribute('line__1', 'start: ' + plane.v1, end: plane.v2});
-        plane.setAttribute('line__2', {start: plane.v2, end: plane.v3});
-        plane.setAttribute('line__3', {start: plane.v3, end: plane.v4});
-        plane.setAttribute('line__4', {start: plane.v4, end: plane.v1});
+        // Maybe it will update properly if the text form is used, like geometry?
+        plane.setAttribute('line__1', 'start: ' + dx2 + ' 0 ' + dy2 + '; end: ' + dx2 + ' 0 ' + -dy2);
+        plane.setAttribute('line__2', 'start: ' + dx2 + ' 0 ' + -dy2 + '; end: ' + -dx2 + ' 0 ' + -dy2);
+        plane.setAttribute('line__3', 'start: ' + -dx2 + ' 0 ' + -dy2 + '; end: ' + -dx2 + ' 0 ' + dy2);
+        plane.setAttribute('line__4', 'start: ' + -dx2 + ' 0 ' + dy2 + '; end: ' + dx2 + ' 0 ' + dy2);
         
         if (navigator.userAgent.indexOf('Android') >= 0) {
           // HACK for current draft APK -- Z->Y, Y->X, X->Z...

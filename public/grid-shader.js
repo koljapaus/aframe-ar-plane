@@ -19,7 +19,7 @@
           'varying vec2 coord;',
           'void main(void) {',
           '  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);',
-          '  coord = position.xy / interval;',
+          '  coord = vec2(position.x / interval, position.y / interval);',
           '}'
         ].join('\n'),
 
