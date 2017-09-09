@@ -1,6 +1,5 @@
-// On the example polygon geometry, it looks right.
-// On the actual planes/polygons, we only get proper spacing in one dimension.
-// Probably because texture is mapped to x and y, not x and z.
+// Grid along X and Z (horizontal planes).
+
 AFRAME.registerShader('grid', {
   schema: { 
     color: {type: 'color', is: 'uniform', default: 'white'},
@@ -21,7 +20,7 @@ AFRAME.registerShader('grid', {
     'varying vec2 coord;',
     'void main(void) {',
     '  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);',
-    '  coord = vec2(position.x / interval, position.y / interval);',
+    '  coord = vec2(position.x / interval, position.z / interval);',
     '}'
   ].join('\n'),
 

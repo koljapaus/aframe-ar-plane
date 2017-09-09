@@ -90,10 +90,10 @@ AFRAME.registerGeometry('polygon', {
           sc.appendChild(plane);
           
           // Add lines for bounding box.
-          plane.setAttribute('line__1', {color: colorToUse, opacity:0.7});
-          plane.setAttribute('line__2', {color: colorToUse, opacity:0.7});
-          plane.setAttribute('line__3', {color: colorToUse, opacity:0.7});
-          plane.setAttribute('line__4', {color: colorToUse, opacity:0.7});
+          plane.setAttribute('line__1', {color: colorToUse});
+          plane.setAttribute('line__2', {color: colorToUse});
+          plane.setAttribute('line__3', {color: colorToUse});
+          plane.setAttribute('line__4', {color: colorToUse});
           
           plane.insertAdjacentHTML('beforeend',
             // Add a plane label (which needs to be rotated to match a-box).
@@ -135,27 +135,21 @@ AFRAME.registerGeometry('polygon', {
         var dx2 = evt.detail.extent.x / 2.0;
         var dz2 = evt.detail.extent.z / 2.0;
         var bbox = plane.querySelector('.bbox');
-/*        
-        if (!plane.v1) { plane.v1 = new THREE.Vector3(); }
-        if (!plane.v2) { plane.v2 = new THREE.Vector3(); }
-        if (!plane.v3) { plane.v3 = new THREE.Vector3(); }
-        if (!plane.v4) { plane.v4 = new THREE.Vector3(); }
-        plane.v1.set(dx2, 0, dz2);
-        plane.v2.set(dx2, 0, -dz2);
-        plane.v3.set(-dx2, 0, -dz2);
-        plane.v4.set(-dx2, 0, dz2);
-        
-        plane.setAttribute('line__1', {start:plane.v1, end:plane.v2});
-        plane.setAttribute('line__2', {start:plane.v2, end:plane.v3});
-        plane.setAttribute('line__3', {start:plane.v3, end:plane.v4});
-        plane.setAttribute('line__4', {start:plane.v4, end:plane.v1});
-*/  
-        // Maybe it will update properly if the text form is used, like geometry?
-        bbox.setAttribute('line__1', 'start:' + dx2 + ' 0 ' + dz2 + '; end:' + dx2 + ' 0 ' + -dz2);
-        bbox.setAttribute('line__2', 'start:' + dx2 + ' 0 ' + -dz2 + '; end:' + -dx2 + ' 0 ' + -dz2);
-        bbox.setAttribute('line__3', 'start:' + -dx2 + ' 0 ' + -dz2 + '; end:' + -dx2 + ' 0 ' + dz2);
-        bbox.setAttribute('line__4', 'start:' + -dx2 + ' 0 ' + dz2 + '; end:' + dx2 + ' 0 ' + dz2);
-      
+       
+        if (!bbox.v1) { bbox.v1 = new THREE.Vector3(); }
+        if (!bbox.v2) { bbox.v2 = new THREE.Vector3(); }
+        if (!bbox.v3) { bbox.v3 = new THREE.Vector3(); }
+        if (!bbox.v4) { bbox.v4 = new THREE.Vector3(); }
+        bbox.v1.set(dx2, 0, dz2);
+        bbox.v2.set(dx2, 0, -dz2);
+        bbox.v3.set(-dx2, 0, -dz2);
+        bbox.v4.set(-dx2, 0, dz2);        
+        // Does this need to be done each time?
+        bbox.setAttribute('line__1', {start:bbox.v1, end:bbox.v2});
+        bbox.setAttribute('line__2', {start:bbox.v2, end:bbox.v3});
+        bbox.setAttribute('line__3', {start:bbox.v3, end:bbox.v4});
+        bbox.setAttribute('line__4', {start:bbox.v4, end:bbox.v1});
+
         // Fill out the plane label with informative text.
         // DETAIL: when creating, getAttribute doesn't work this tick
         plane.querySelector('.label').setAttribute('text', {
