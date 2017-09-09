@@ -144,6 +144,9 @@ AFRAME.registerGeometry('polygon', {
         // Does this need to be done each time?
         // The line component doesn't seem to handle multiples correctly.
         bbox.setAttribute('line__1', {start:v1, end:v2});
+        var line = bbox.components['line__1'];
+        bbox.removeObject3D(line.attrName);
+        bbox.setObject3D(line.attrName, line.line);
         bbox.setAttribute('line__2', {start:v2, end:v3});
         bbox.setAttribute('line__3', {start:v3, end:v4});
         bbox.setAttribute('line__4', {start:v4, end:v1});
