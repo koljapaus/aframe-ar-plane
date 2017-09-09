@@ -92,7 +92,7 @@ AFRAME.registerGeometry('polygon', {
             // Add a plane label (which needs to be rotated to match a-box).
             '<a-entity class="label" rotation="-90 0 0"></a-entity>' +
             // Add bounding box.
-            '<a-box class="bbox" position="0 -0.01 0" height="0.01" material="wireframe:true; color:' + colorToUse + '"></a-box>' +
+            '<a-box class="bbox" position="0 -0.001 0" height="0" material="wireframe:true; color:' + colorToUse + '"></a-box>' +
             // Add a thing to mark the center of the plane.
             '<a-entity thing></a-entity>');
         } else {
