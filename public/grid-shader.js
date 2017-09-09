@@ -1,6 +1,6 @@
 // On the example polygon geometry, it looks right.
 // On the actual planes/polygons, we only get proper spacing in one dimension.
-
+// Probably because texture is mapped to x and y, not x and z.
 AFRAME.registerShader('grid', {
   schema: { 
     color: {type: 'color', is: 'uniform', default: 'white'},

@@ -102,6 +102,8 @@ AFRAME.registerGeometry('polygon', {
             '<a-entity class="bbox"></a-entity>' +
             // Add a thing to mark the center of the plane.
             '<a-entity thing></a-entity>');
+          
+          // TODO: Fix UV so X and Z work.
         }
         
         // Update the plane.
@@ -308,7 +310,12 @@ AFRAME.registerGeometry('polygon', {
         addEventListeners();
         
         onCreateOrUpdatePlane(new CustomEvent('createplane', {detail: {
-          id
+          id: 'bogus',
+          position: {x:0, y:0, z:-2},
+          rotation: {x:0, y:0, z:0},
+          extent: {x:2, y:0, z:1},
+          scale: {x:1, y:1, z:1},
+          alignment: 0
         }}));
       }
       
