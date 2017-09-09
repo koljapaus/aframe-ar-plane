@@ -49,7 +49,10 @@ AFRAME.registerGeometry('polygon', {
     <a-scene ar>
       <!-- When we have a raycaster hit, we use this ball to show where. -->
       <a-sphere id="ball" radius="0.01" position="0 0.005 -0.5"></a-sphere>
-            
+<!--
+      <a-entity position="0 -0.1 -2" geometry="primitive:polygon" 
+                material="shader:grid;color:blue;interval:0.1;side:double"></a-entity>
+-->      
       <a-camera>
         <!-- A hit from AR, rather than A-Frame objects, hits this entity. -->
         <a-entity id="ar-world"></a-entity>
@@ -118,10 +121,10 @@ AFRAME.registerGeometry('polygon', {
         var dx2 = evt.detail.extent.x / 2.0;
         var dy2 = evt.detail.extent.y / 2.0;
         // Maybe it will update properly if the text form is used, like geometry?
-        plane.setAttribute('line__1', 'start: ' + dx2 + ' 0 ' + dy2 + '; end: ' + dx2 + ' 0 ' + -dy2);
-        plane.setAttribute('line__2', 'start: ' + dx2 + ' 0 ' + -dy2 + '; end: ' + -dx2 + ' 0 ' + -dy2);
-        plane.setAttribute('line__3', 'start: ' + -dx2 + ' 0 ' + -dy2 + '; end: ' + -dx2 + ' 0 ' + dy2);
-        plane.setAttribute('line__4', 'start: ' + -dx2 + ' 0 ' + dy2 + '; end: ' + dx2 + ' 0 ' + dy2);
+        plane.setAttribute('line__1', {start:{x:dx2, y:0, z:dy2},end:{x:dx2, y:0, z:-dy2}});
+        plane.setAttribute('line__2', {start:{x:dx2, y:0, z:-dy2},end:{x:-dx2, y:0, z:-dy2}});
+        plane.setAttribute('line__3', {start:{x:-dx2, y:0, z:-dy2},end:{x:-dx2, y:0, z:dy2}});
+        plane.setAttribute('line__4', {start:{x:-dx2, y:0, z:dy2},end:{x:dx2, y:0, z:dy2}});
         
         if (navigator.userAgent.indexOf('Android') >= 0) {
           // HACK for current draft APK -- Z->Y, Y->X, X->Z...
