@@ -87,7 +87,7 @@ AFRAME.registerGeometry('polygon', {
           plane = document.createElement('a-entity');
           plane.setAttribute('id', 'plane_' + evt.detail.id);
           plane.setAttribute('class', 'plane');
-          plane.setAttribute('material', 'shader:grid;interval:0.1;side:double;opacity:0.3;color:' + colorToUse);
+          plane.setAttribute('material', 'shader:grid;interval:0.1;side:double;opacity:0.2;color:' + colorToUse);
           sc.appendChild(plane);
           
           // Add lines for bounding box.
@@ -124,7 +124,7 @@ AFRAME.registerGeometry('polygon', {
         // plane.setAttribute('scale', evt.detail.scale);
 
         // If we have vertices, use polygon geometry
-        if (false) { //evt.detail.vertices) {
+        if (evt.detail.vertices) {
           plane.setAttribute('geometry', 'primitive:polygon; vertices:' + evt.detail.vertices.join(','));
           // fails... plane.setAttribute('geometry', {primitive:'polygon', vertices: evt.detail.vertices});
         } else {
@@ -133,7 +133,7 @@ AFRAME.registerGeometry('polygon', {
         }
         
         // Update the bounding box.
-        var y = 0.1;
+        var y = 0.01;
         var dx2 = evt.detail.extent.x / 2.0;
         var dz2 = evt.detail.extent.z / 2.0;
         var bbox = plane;
@@ -142,11 +142,8 @@ AFRAME.registerGeometry('polygon', {
         var v3 = new THREE.Vector3(-dx2, y, -dz2);
         var v4 = new THREE.Vector3(-dx2, y, dz2);
         // Does this need to be done each time?
-        // The line component doesn't seem to handle multiples correctly.
+        // The line component doesn't seem to handle updates correctly.
         bbox.setAttribute('line__1', {start:v1, end:v2});
-        var line = bbox.components['line__1'];
-        bbox.removeObject3D(line.attrName);
-        bbox.setObject3D(line.attrName, line.line);
         bbox.setAttribute('line__2', {start:v2, end:v3});
         bbox.setAttribute('line__3', {start:v3, end:v4});
         bbox.setAttribute('line__4', {start:v4, end:v1});
