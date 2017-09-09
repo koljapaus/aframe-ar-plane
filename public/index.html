@@ -109,8 +109,18 @@ AFRAME.registerGeometry('polygon', {
         plane.setAttribute('width', evt.detail.extent.x);
         plane.setAttribute('depth', evt.detail.extent.z);
         plane.setAttribute('position', evt.detail.position);
-        var rotation = new THREE.Vector3().copy(evt.detail.rotation);
-        
+        var rotation = new THREE.Vector3().copy(evt.detail.rotation);        
+        if (navigator.userAgent.indexOf('Android') >= 0) {
+          // HACK for current draft APK -- Z->Y, Y->X, X->Z...
+          var temp = rotation.y;
+          rotation.y = rotation.z;
+          rotation.z = rotation.x;
+          rotation.x = temp;
+        }
+        plane.setAttribute('rotation', rotation);
+        // Currently, scale is always 1... 
+        // plane.setAttribute('scale', evt.detail.scale);
+
         // If we have vertices, use polygon geometry
         if (evt.detail.vertices) {
           plane.setAttribute('geometry', 'primitive:polygon; vertices:' + evt.detail.vertices.join(','));
@@ -125,18 +135,6 @@ AFRAME.registerGeometry('polygon', {
         plane.setAttribute('line__2', {start:{x:dx2, y:0, z:-dy2},end:{x:-dx2, y:0, z:-dy2}});
         plane.setAttribute('line__3', {start:{x:-dx2, y:0, z:-dy2},end:{x:-dx2, y:0, z:dy2}});
         plane.setAttribute('line__4', {start:{x:-dx2, y:0, z:dy2},end:{x:dx2, y:0, z:dy2}});
-        
-        if (navigator.userAgent.indexOf('Android') >= 0) {
-          // HACK for current draft APK -- Z->Y, Y->X, X->Z...
-          var temp = rotation.y;
-          rotation.y = rotation.z;
-          rotation.z = rotation.x;
-          rotation.x = temp;
-        }
-        
-        plane.setAttribute('rotation', rotation);
-        // Currently, scale is always 1... 
-        // plane.setAttribute('scale', evt.detail.scale);
         
         // Fill out the plane label with informative text.
         // DETAIL: when creating, getAttribute doesn't work this tick
