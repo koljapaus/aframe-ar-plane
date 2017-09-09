@@ -99,6 +99,8 @@ AFRAME.registerGeometry('polygon', {
           plane.insertAdjacentHTML('beforeend',
             // Add a plane label (which needs to be rotated to match a-box).
             '<a-entity class="label" rotation="-90 0 0"></a-entity>' +
+            // Add bounding box.
+            '<a-box class="bbox" material="wireframe:true; color:' + colorToUse + '"></a-box>' +
             // Add a thing to mark the center of the plane.
             '<a-entity thing></a-entity>');
           
@@ -136,17 +138,19 @@ AFRAME.registerGeometry('polygon', {
         var y = 0.01;
         var dx2 = evt.detail.extent.x / 2.0;
         var dz2 = evt.detail.extent.z / 2.0;
-        var bbox = plane;
+        var bbox = plane.querySelector('.bbox');
+        bbox.setAttribute('width', evt.detail.extent.x);
+        bbox.setAttribute('depth', evt.detail.extent.z);
+        bbox.setAttribute('depth', evt.detail.extent.z);
         var v1 = new THREE.Vector3(dx2, y, dz2);
         var v2 = new THREE.Vector3(dx2, y, -dz2);
         var v3 = new THREE.Vector3(-dx2, y, -dz2);
         var v4 = new THREE.Vector3(-dx2, y, dz2);
-        // Does this need to be done each time?
         // The line component doesn't seem to handle updates correctly.
-        bbox.setAttribute('line__1', {start:v1, end:v2});
-        bbox.setAttribute('line__2', {start:v2, end:v3});
-        bbox.setAttribute('line__3', {start:v3, end:v4});
-        bbox.setAttribute('line__4', {start:v4, end:v1});
+        bbox.setAttribute('line__1', {color:colorToUse, start:v1, end:v2});
+        bbox.setAttribute('line__2', {color:colorToUse, start:v2, end:v3});
+        bbox.setAttribute('line__3', {color:colorToUse, start:v3, end:v4});
+        bbox.setAttribute('line__4', {color:colorToUse, start:v4, end:v1});
 
         // Fill out the plane label with informative text.
         // DETAIL: when creating, getAttribute doesn't work this tick
