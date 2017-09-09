@@ -125,21 +125,34 @@ AFRAME.registerGeometry('polygon', {
         if (evt.detail.vertices) {
           plane.setAttribute('geometry', 'primitive:polygon; vertices:' + evt.detail.vertices.join(','));
           // fails... plane.setAttribute('geometry', {primitive:'polygon', vertices: evt.detail.vertices});
+        } else {
+          plane.setAttribute('geometry', 'primitive:polygon; vertices:' + evt.detail.vertices.join(','));          
         }
         
         // Update the bounding box.
         var dx2 = evt.detail.extent.x / 2.0;
-        var dy2 = evt.detail.extent.y / 2.0;
+        var dz2 = evt.detail.extent.z / 2.0;
+/*        
         if (!plane.v1) { plane.v1 = new THREE.Vector3(); }
         if (!plane.v2) { plane.v2 = new THREE.Vector3(); }
         if (!plane.v3) { plane.v3 = new THREE.Vector3(); }
         if (!plane.v4) { plane.v4 = new THREE.Vector3(); }
-        // Maybe it will update properly if the text form is used, like geometry?
-        plane.setAttribute('line__1', {start:v1,end:{x:dx2, y:0, z:-dy2}});
-        plane.setAttribute('line__2', {start:{x:dx2, y:0, z:-dy2},end:{x:-dx2, y:0, z:-dy2}});
-        plane.setAttribute('line__3', {start:{x:-dx2, y:0, z:-dy2},end:{x:-dx2, y:0, z:dy2}});
-        plane.setAttribute('line__4', {start:{x:-dx2, y:0, z:dy2},end:{x:dx2, y:0, z:dy2}});
+        plane.v1.set(dx2, 0, dz2);
+        plane.v2.set(dx2, 0, -dz2);
+        plane.v3.set(-dx2, 0, -dz2);
+        plane.v4.set(-dx2, 0, dz2);
         
+        plane.setAttribute('line__1', {start:plane.v1, end:plane.v2});
+        plane.setAttribute('line__2', {start:plane.v2, end:plane.v3});
+        plane.setAttribute('line__3', {start:plane.v3, end:plane.v4});
+        plane.setAttribute('line__4', {start:plane.v4, end:plane.v1});
+*/  
+        // Maybe it will update properly if the text form is used, like geometry?
+        plane.setAttribute('line__1', 'start:' + dx2 + ' 0 ' + dz2 + '; end:' + dx2 + ' 0 ' + -dz2);
+        plane.setAttribute('line__2', 'start:' + dx2 + ' 0 ' + -dz2 + '; end:' + -dx2 + ' 0 ' + -dz2);
+        plane.setAttribute('line__3', 'start:' + -dx2 + ' 0 ' + -dz2 + '; end:' + -dx2 + ' 0 ' + dz2);
+        plane.setAttribute('line__4', 'start:' + -dx2 + ' 0 ' + dz2 + '; end:' + dx2 + ' 0 ' + dz2);
+      
         // Fill out the plane label with informative text.
         // DETAIL: when creating, getAttribute doesn't work this tick
         plane.querySelector('.label').setAttribute('text', {
