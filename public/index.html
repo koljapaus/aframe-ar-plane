@@ -74,7 +74,7 @@ AFRAME.registerGeometry('polygon', {
       var sc = document.querySelector('a-scene');
       function showHUD(msg) { sc.querySelector('#hud').setAttribute('value', msg); }
       
-      var randomColors = ['red', 'orange', 'yellow', 'green', 'blue', 'violet'];
+      var randomColors = ['red', 'orange', /* 'yellow', */ 'green', 'blue', 'violet'];
       function onCreateOrUpdatePlane(evt) {
         var created = false;
         var plane = sc.querySelector('#plane_' + evt.detail.id);
@@ -137,20 +137,16 @@ AFRAME.registerGeometry('polygon', {
         var dx2 = evt.detail.extent.x / 2.0;
         var dz2 = evt.detail.extent.z / 2.0;
         var bbox = plane;
-        if (!bbox.v1) { bbox.v1 = new THREE.Vector3(); }
-        if (!bbox.v2) { bbox.v2 = new THREE.Vector3(); }
-        if (!bbox.v3) { bbox.v3 = new THREE.Vector3(); }
-        if (!bbox.v4) { bbox.v4 = new THREE.Vector3(); }
-        bbox.v1.set(dx2, y, dz2);
-        bbox.v2.set(dx2, y, -dz2);
-        bbox.v3.set(-dx2, y, -dz2);
-        bbox.v4.set(-dx2, y, dz2);        
+        var v1 = new THREE.Vector3(dx2, y, dz2);
+        var v2 = new THREE.Vector3(dx2, y, -dz2);
+        var v3 = new THREE.Vector3(-dx2, y, -dz2);
+        var v4 = new THREE.Vector3(-dx2, y, dz2);
         // Does this need to be done each time?
-        bbox.setAttribute('line__1', {start:bbox.v1, end:bbox.v2});
-        bbox.components['line__1'].geometry.verticesNeedUpdate = true;
-        bbox.setAttribute('line__2', {color:colorToUse, opacity:1, start:bbox.v2, end:bbox.v3});
-        bbox.setAttribute('line__3', {color:colorToUse, opacity:1, start:bbox.v3, end:bbox.v4});
-        bbox.setAttribute('line__4', {color:colorToUse, opacity:1, start:bbox.v4, end:bbox.v1});
+        // The line component doesn't seem to handle multiples correctly.
+        bbox.setAttribute('line__1', {start:v1, end:v2});
+        bbox.setAttribute('line__2', {start:v2, end:v3});
+        bbox.setAttribute('line__3', {start:v3, end:v4});
+        bbox.setAttribute('line__4', {start:v4, end:v1});
 
         // Fill out the plane label with informative text.
         // DETAIL: when creating, getAttribute doesn't work this tick
