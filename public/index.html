@@ -86,7 +86,7 @@ AFRAME.registerGeometry('polygon', {
           plane = document.createElement('a-entity');
           plane.setAttribute('id', 'plane_' + evt.detail.id);
           plane.setAttribute('class', 'plane');
-          plane.setAttribute('material', 'shader:grid;interval:0.1;side:double; opacity:0.3; color:' + colorToUse);
+          plane.setAttribute('material', 'shader:grid;interval:0.1;side:double;opacity:0.3;color:' + colorToUse);
           sc.appendChild(plane);
           
           // Add lines for bounding box.
@@ -305,7 +305,11 @@ AFRAME.registerGeometry('polygon', {
           }
         });
         
-        addEventListeners(); 
+        addEventListeners();
+        
+        onCreateOrUpdatePlane(new CustomEvent('createplane', {detail: {
+          id
+        }}));
       }
       
       if (sc.hasLoaded) { onSceneLoaded(); }

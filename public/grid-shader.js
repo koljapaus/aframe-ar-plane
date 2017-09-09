@@ -1,5 +1,5 @@
-// On mobile, we only get proper spacing in one dimension.
-// On desktop, it looks right.
+// On the example polygon geometry, it looks right.
+// On the actual planes/polygons, we only get proper spacing in one dimension.
 
 AFRAME.registerShader('grid', {
   schema: { 
@@ -33,7 +33,7 @@ AFRAME.registerShader('grid', {
     'uniform float thickness;',
     'varying vec2 coord;',
     'void main() {',
-    '  vec2 grid = vec2(abs(fract(coord.x - 0.5) - 0.5) / fwidth(coord), abs(fract(coord.y - 0.5) - 0.5) / fheight(coord));',
+    '  vec2 grid = abs(fract(coord - 0.5) - 0.5) / fwidth(coord);',
     '  float line = min(grid.x, grid.y);',
     '  if (line > thickness) { discard; } else',
     '  gl_FragColor = vec4(color, opacity);',
