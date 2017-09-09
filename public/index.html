@@ -118,9 +118,10 @@ this should now be done in the bowels of aframe-ar, until no longer required...
 
         // If we have vertices, use polygon geometry
         if (evt.detail.vertices) {
-          // fails... plane.setAttribute('geometry', {primitive:'polygon', vertices: evt.detail.vertices});
-          plane.setAttribute('geometry', 'primitive:polygon; vertices:' 
-                                         + evt.detail.vertices.join(','));
+          // fails... 
+          plane.setAttribute('geometry', {primitive:'polygon', vertices: evt.detail.vertices});
+          //plane.setAttribute('geometry', 'primitive:polygon; vertices:' 
+          //                               + evt.detail.vertices.join(','));
         } else {
           plane.setAttribute('geometry', 'primitive:box; width:' + evt.detail.extent.x
                                          + '; height:0; depth:' + evt.detail.extent.z);        
