@@ -277,9 +277,9 @@ this should now be done in aframe-ar... until no longer required...
               'identifier: ' + plane.identifier + '' + // string, per latest spec
               ' ' + JSON.stringify(plane.vector3) + '' + // unified to THREE.Vector3
               ' ' + JSON.stringify(plane.rotation) + '' + // unified to THREE.Quaternion
-              ' ' + plane.extent + '' + // number[2], per latest spec
-              //'vertices: ' + plane.vertices + '\n' + // number[3*n], per latest spec
-              '\n';
+              ' ' + plane.extent + '\n' + // number[2], per latest spec
+              (plane.vertices ? ('vertices: ' + plane.vertices.length + '\n') : '') + // number[3*n], per latest spec
+              '';
             });
             showHUD(msg);
           }
