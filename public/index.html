@@ -85,14 +85,14 @@ AFRAME.registerGeometry('polygon', {
           plane = document.createElement('a-entity');
           plane.setAttribute('id', 'plane_' + evt.detail.id);
           plane.setAttribute('class', 'plane');
-          plane.setAttribute('material', 'shader:grid;interval:0.1;side:double;opacity:0.2;color:' + colorToUse);
+          plane.setAttribute('material', 'shader:flat;interval:0.1;opacity:0.2;color:' + colorToUse);
           sc.appendChild(plane);
           
           plane.insertAdjacentHTML('beforeend',
             // Add a plane label (which needs to be rotated to match a-box).
             '<a-entity class="label" rotation="-90 0 0"></a-entity>' +
             // Add bounding box.
-            '<a-box class="bbox" height="0" material="wireframe:true; color:' + colorToUse + '"></a-box>' +
+            '<a-box class="bbox" position="0 -0.01 0" height="0.01" material="wireframe:true; color:' + colorToUse + '"></a-box>' +
             // Add a thing to mark the center of the plane.
             '<a-entity thing></a-entity>');
         } else {
@@ -132,7 +132,7 @@ this should now be done in the bowels of aframe-ar, until no longer required...
         var bbox = plane.querySelector('.bbox');
         bbox.setAttribute('width', evt.detail.extent.x);
         bbox.setAttribute('depth', evt.detail.extent.z);
-/*
+
         // Fill out the plane label with informative text.
         // DETAIL: when creating, getAttribute doesn't work this tick
         plane.querySelector('.label').setAttribute('text', {
@@ -156,7 +156,7 @@ this should now be done in the bowels of aframe-ar, until no longer required...
         //+ '\nscale y: ' + plane.getAttribute('scale').y
         //+ '\nscale z: ' + plane.getAttribute('scale').z
         });
-*/        
+        
         // We updated the plane (or added it), so update the raycaster.
         // Because there may be a DOM change, we may need to wait a tick.
         if (created) {
