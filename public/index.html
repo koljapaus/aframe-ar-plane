@@ -232,7 +232,7 @@ this should now be done in aframe-ar... until no longer required...
           if (!ardisplay) { showHUD('no ardisplay?'); } else {
             var planes = ardisplay.getPlanes ? ardisplay.getPlanes() : ardisplay.anchors_;
             // Force plane conformance to common spec (almost latest spec).
-            planes.forEach(function (plane) {
+            planes && planes.forEach(function (plane) {
               // Force draft ARCore conformance to latest spec.
               if (!plane.identifier) { plane.identifier = plane.id; }
               if (plane.polygon) { plane.vertices = plane.polygon; }
