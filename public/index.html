@@ -101,17 +101,6 @@ AFRAME.registerGeometry('polygon', {
         // Update the plane.
         plane.setAttribute('position', evt.detail.position);
         var rotation = new THREE.Vector3().copy(evt.detail.rotation);    
-/* 
-this should now be done in aframe-ar... until no longer required...
-
-        if (navigator.userAgent.indexOf('Android') >= 0) {
-          // HACK for current draft APK -- Z->Y, Y->X, X->Z...
-          var temp = rotation.y;
-          rotation.y = rotation.z;
-          rotation.z = rotation.x;
-          rotation.x = temp;
-        }
-*/        
         plane.setAttribute('rotation', rotation);
         // Currently, scale is always 1... 
         // plane.setAttribute('scale', evt.detail.scale);
