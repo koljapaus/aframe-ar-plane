@@ -181,6 +181,12 @@ this should now be done in aframe-ar... until no longer required...
         sc.addEventListener('updateplane', onCreateOrUpdatePlane);
         sc.addEventListener('removeplane', onRemovePlane);                
       }
+
+      function removePlaneListeners() {
+        sc.removeEventListener('createplane', onCreateOrUpdatePlane);
+        sc.removeEventListener('updateplane', onCreateOrUpdatePlane);
+        sc.removeEventListener('removeplane', onRemovePlane);                
+      }      
       
       function addARRaycasterListeners() {
         var raycaster = sc.querySelector('[ar-raycaster]');
