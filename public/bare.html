@@ -58,7 +58,7 @@ AFRAME.registerGeometry('polygon', {
         <!-- FIXME: cursor / raycaster origin appears to be significant distance away,  -->
         <!--        so intersection distance varies significantly from AR hit distance? -->
         <a-entity cursor="fuse:false"
-                  raycaster="objects:.plane" 
+                  raycaster="objects:.plane;recursive:false" 
                   ar-raycaster="el:#ar-world"></a-entity>
         
         <!-- Separate the cursor appearance.-->
@@ -112,7 +112,7 @@ AFRAME.registerGeometry('polygon', {
             plane.setAttribute('class', 'plane');
             plane.setAttribute('height', 0.001);
 
-            plane.setAttribute('material', 'shader:grid;interval:0.1;side:double;opacity:0.3;color:' + colorToUse);
+            plane.setAttribute('material', 'shader:grid;interval:0.1;side:double;opacity:0.5;color:' + colorToUse);
 
             sc.appendChild(plane);
 
@@ -122,7 +122,7 @@ AFRAME.registerGeometry('polygon', {
               '<a-entity class="label" rotation="-90 0 0"></a-entity>' +             
 */              
               // Add bounding box.
-              '<a-box class="bbox" position="0 -0.011 0" height="0.01" material="wireframe:true;color:' + colorToUse + '"></a-box>' +
+              '<a-box class="bbox" position="0 0 0" height="0" material="wireframe:true;opacity:0.5;color:' + colorToUse + '"></a-box>' +
               // Add a thing to mark the center of the plane.
               '<a-entity thing></a-entity>');
 
@@ -220,14 +220,14 @@ AFRAME.registerGeometry('polygon', {
           var distance = evt.detail.intersections[0].distance;
           var el = evt.detail.els[0];
           showHUD('raycaster-intersection ' + distance + '\n' + JSON.stringify(point) + '\n' + el.id /*el.outerHTML*/);
-          if (el.getAttribute('class') === 'plane') { el.setAttribute('opacity', 0.7); }
+          if (el.getAttribute('class') === 'plane') { el.setAttribute('opacity', 1.0); }
           ball.setAttribute('position', point);
           ball.setAttribute('visible', true);
         });
         raycaster.addEventListener('raycaster-intersection-cleared', function (evt) {
           var el = evt.detail.el;
           showHUD('raycaster-intersection-cleared\n' + el.outerHTML);
-          if (el.getAttribute('class') === 'plane') { el.setAttribute('opacity', 0.3); }
+          if (el.getAttribute('class') === 'plane') { el.setAttribute('opacity', 0.5); }
           ball.setAttribute('visible', false);
         });
       }
