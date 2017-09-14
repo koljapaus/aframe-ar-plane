@@ -255,6 +255,31 @@ AFRAME.registerGeometry('polygon', {
               y: cursor.intersection.point.y + 0.5, 
               z: cursor.intersection.point.z});
             sc.appendChild(marker);
+            
+            var cursorworldpos = new THREE.Vector3();
+            cursor.el.object3D.getWorldPosition(cursorworldpos);
+            
+            marker = document.createElement('a-box');
+            marker.setAttribute('width', 0.01);
+            marker.setAttribute('depth', 0.01);
+            marker.setAttribute('height', 1);
+            marker.setAttribute('color', 'green');
+            marker.setAttribute('position', {
+              x: cursor.intersection.point.x + cursorworldpos.x, 
+              y: cursor.intersection.point.y + cursorworldpos.y + 0.5, 
+              z: cursor.intersection.point.z + cursorworldpos.z });
+            sc.appendChild(marker);
+            
+            marker = document.createElement('a-box');
+            marker.setAttribute('width', 0.01);
+            marker.setAttribute('depth', 0.01);
+            marker.setAttribute('height', 1);
+            marker.setAttribute('color', 'red');
+            marker.setAttribute('position', {
+              x: cursor.intersection.point.x - cursorworldpos.x, 
+              y: cursor.intersection.point.y - cursorworldpos.y + 0.5, 
+              z: cursor.intersection.point.z - cursorworldpos.z });
+            sc.appendChild(marker);
           }
           
           // Show plane info on click.
