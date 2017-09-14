@@ -55,8 +55,7 @@ AFRAME.registerGeometry('polygon', {
         <a-entity id="ar-world"></a-entity>
         
         <!-- Declare a cursor, and what objects its raycaster hit (including AR). -->
-        <!-- FIXME: cursor / raycaster origin appears to be significant distance away,  -->
-        <!--        so intersection distance varies significantly from AR hit distance? -->
+        <!-- NOTE: ar-raycaster VRHit uses a "tolerance" fudge factor, so imprecise -->
         <a-entity cursor="fuse:false"
                   raycaster="objects:.plane;recursive:false" 
                   ar-raycaster="el:#ar-world"></a-entity>
