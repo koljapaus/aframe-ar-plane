@@ -212,9 +212,9 @@ AFRAME.registerGeometry('polygon', {
       }            
       
       function addPlaneListeners() {
-        sc.addEventListener('anchorsAdded', onAddedOrUpdatedPlanes);
-        sc.addEventListener('anchorsUpdated', onAddedOrUpdatedPlanes);
-        sc.addEventListener('anchorsRemoved', onRemovedPlanes);
+        sc.addEventListener('anchorsadded', onAddedOrUpdatedPlanes);
+        sc.addEventListener('anchorsupdated', onAddedOrUpdatedPlanes);
+        sc.addEventListener('anchorsremoved', onRemovedPlanes);
       }
       
       function addARRaycasterListeners() {
