@@ -1,69 +1,4 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <title>aframe-ar-plane</title>
-    <meta name="description" content="aframe-ar-plane">
-    <!-- First, include whichever version of A-Frame you like. -->
-    <script src="https://rawgit.com/aframevr/aframe/master/dist/aframe-master.min.js"></script>
-    <!-- Next, include three.ar.js; add the speech recognition polyfill if you want. -->
-    <script src="https://rawgit.com/google-ar/three.ar.js/master/dist/three.ar.js"></script>
-    <!-- Last, include aframe-ar. -->
-    <script src="https://rawgit.com/chenzlabs/aframe-ar/master/dist/aframe-ar.js"></script>
-    
-    <!-- Include XZ grid shader. -->
-    <script src="grid-shader.js"></script>
 
-    <!-- Include polygon component. -->
-    <script src="polygon.js"></script>
-        
-    <!-- Prevent touch causing flicker on iOS. -->
-    <style> * { -webkit-tap-highlight-color: rgba(0,0,0,0); } </style>    
-  </head>
-  <body>    
-    <!-- This is the thing we stick in the middle of planes we detect. -->
-    <script>
-      AFRAME.registerComponent('thing', {
-        init: function () {
-          this.el.setAttribute('geometry', {primitive:'box', width:0.01, depth:0.01, height:1});
-          this.el.setAttribute('position', {y:0.5});
-        }
-      });            
-    </script>    
-
-    <!-- Our scene uses the ar component. -->
-    <a-scene ar>
-      <!-- When we have a raycaster hit, we use this ball to show where. -->
-      <a-sphere id="ball" radius="0.01" position="0 0.005 -0.5"></a-sphere>
-
-      <a-camera>
-        <!-- A hit from AR, rather than A-Frame objects, hits this entity. -->
-        <a-entity id="ar-world"></a-entity>
-        
-        <!-- Declare a cursor, and what objects its raycaster hit (including AR). -->
-        <!-- NOTE: ar-raycaster VRHit uses a "tolerance" fudge factor, so imprecise -->
-        <a-entity cursor="fuse:false"
-                  raycaster="objects:.plane;recursive:false" 
-                  ar-raycaster="el:#ar-world"></a-entity>
-        
-        <!-- Separate the cursor appearance.-->
-        <a-entity position="0 0 -0.1"
-                  scale="0.001 0.001 0.001"
-                  geometry="primitive: ring; radiusInner: 0.8; radiusOuter: 1" 
-                  material="color: yellow; shader: flat; transparent:true"></a-entity>
-        
-        <!-- Heads-up text display. -->
-        <a-text id="hud" 
-                scale="0.01 0.01 0.01" position="0 -0.025 -0.1" 
-                color="yellow" align="center" 
-                value="Hi there"></a-text>
-      </a-camera>
-    </a-scene>    
-    
-    <script>
-      var sc = document.querySelector('a-scene');
-      function showHUD(msg) { sc.querySelector('#hud').setAttribute('value', msg); }
-      
       var randomColors = ['red', 'orange', /* 'yellow', */ 'green', 'blue', 'violet'];
         
       var raycasterUpdateNeeded = false;
@@ -87,6 +22,7 @@
       var tempScale = new THREE.Vector3();
       
       function onAddedOrUpdatedPlanes(evt) {
+        var sc = AFRAME.scenes[0];
         evt.detail.anchors.forEach(function (anchor) {
           var created = false;
           var colorToUse;
@@ -105,10 +41,10 @@
             sc.appendChild(plane);
 
             plane.insertAdjacentHTML('beforeend',                   
-/*                                     
+                                     
               // Add a plane label (which needs to be rotated to match a-box).
               '<a-entity class="label" rotation="-90 0 0"></a-entity>' +             
-*/              
+              
               // Add bounding box.
               '<a-box class="bbox" position="0 0 0" height="0" material="wireframe:true;opacity:0.5;color:' + colorToUse + '"></a-box>' +
               // Add a thing to mark the center of the plane.
@@ -151,7 +87,7 @@
           var bbox = plane.querySelector('.bbox');
           bbox.setAttribute('width', dx);
           bbox.setAttribute('depth', dz);
-/* 
+ 
           // Fill out the plane label with informative text.
           // DETAIL: when creating, getAttribute doesn't work this tick
           plane.querySelector('.label').setAttribute('text', {
@@ -175,7 +111,7 @@
           //+ '\nscale y: ' + plane.getAttribute('scale').y
           //+ '\nscale z: ' + plane.getAttribute('scale').z
           });
-*/       
+       
           // We updated the plane (or added it), so update the raycaster.
           // Because there may be a DOM change, we need to wait a tick.
           if (created) { setTimeout(raycasterNeedsUpdate); } else { raycasterNeedsUpdate(); }
@@ -185,6 +121,7 @@
       }
       
       function onRemovedPlanes(evt) {
+        var sc = AFRAME.scenes[0];
         evt.detail.anchors.forEach(function (anchor) {
           var plane = sc.querySelector('#plane_' + anchor.identifier);
           if (plane && plane.parentElement) {
@@ -194,6 +131,7 @@
       }            
       
       function addPlaneListeners() {
+        var sc = AFRAME.scenes[0];
         // Listen for plane events that aframe-ar generates.
         sc.addEventListener('anchorsadded', onAddedOrUpdatedPlanes);
         sc.addEventListener('anchorsupdated', onAddedOrUpdatedPlanes);

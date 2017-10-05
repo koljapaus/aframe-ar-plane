@@ -2,17 +2,26 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Hello, World! • A-Frame three.ar.js</title>
-    <meta name="description" content="Hello, World! • A-Frame three.ar.js">
-    <script src="https://rawgit.com/chenzlabs/aframe/master/dist/aframe-master.min.js"></script>
+    <title>aframe-ar-plane</title>
+    <meta name="description" content="aframe-ar-plane">
+    <!-- First, include whichever version of A-Frame you like. -->
+    <script src="https://rawgit.com/aframevr/aframe/master/dist/aframe-master.min.js"></script>
+    <!-- Next, include three.ar.js; add the speech recognition polyfill if you want. -->
     <script src="https://rawgit.com/google-ar/three.ar.js/master/dist/three.ar.js"></script>
+    <!-- Last, include aframe-ar. -->
     <script src="https://rawgit.com/chenzlabs/aframe-ar/master/dist/aframe-ar.js"></script>
-    <script src="grid-shader.js"></script>
     
+    <!-- Include XZ grid shader. -->
+    <script src="grid-shader.js"></script>
+
+    <!-- Include polygon component. -->
+    <script src="polygon.js"></script>
+        
     <!-- Prevent touch causing flicker on iOS. -->
     <style> * { -webkit-tap-highlight-color: rgba(0,0,0,0); } </style>    
   </head>
   <body>    
+    <!-- This is the thing we stick in the middle of planes we detect. -->
     <script>
       AFRAME.registerComponent('thing', {
         init: function () {
@@ -20,36 +29,9 @@
           this.el.setAttribute('position', {y:0.5});
         }
       });            
-    </script>
-    
-    <!-- TODO: should polygon component b
-    <script>
-      AFRAME.registerGeometry('polygon', {
-        schema: {
-          stride: { default: 3 },
-          vertices: { default: [-1,1,0, -1,-1,0, 1,-1,0, 1,0.5,0] }
-        },
+    </script>    
 
-        init: function (data) {
-          var geometry = new THREE.Geometry();
-          var i;
-          for (i = 0; (i+2) < data.vertices.length; i += data.stride) {
-            geometry.vertices.push(new THREE.Vector3(data.vertices[i], data.vertices[i+1], data.vertices[i+2]));
-          }
-          geometry.computeBoundingBox();
-          // generate faces - this makes a triangle fan, from the first +Y point around
-          for (i = 0; i < geometry.vertices.length - 2; i++)
-          {
-            geometry.faces.push(new THREE.Face3(0, i + 1, i + 2));
-          }
-          geometry.mergeVertices();
-          geometry.computeFaceNormals();
-          geometry.computeVertexNormals();
-          this.geometry = geometry;
-        }
-      });      
-    </script>
-    
+    <!-- Our scene uses the ar component. -->
     <a-scene ar>
       <!-- When we have a raycaster hit, we use this ball to show where. -->
       <a-sphere id="ball" radius="0.01" position="0 0.005 -0.5"></a-sphere>
@@ -212,6 +194,7 @@
       }            
       
       function addPlaneListeners() {
+        // Listen for plane events that aframe-ar generates.
         sc.addEventListener('anchorsadded', onAddedOrUpdatedPlanes);
         sc.addEventListener('anchorsupdated', onAddedOrUpdatedPlanes);
         sc.addEventListener('anchorsremoved', onRemovedPlanes);
