@@ -187,7 +187,7 @@
           
           // Show plane info on click.
           // (may not have arDisplay until tick after loaded)
-          var ardisplay = sc.components['ar'].arDisplay;
+          var ardisplay = sc.components['ar'].getSource().arDisplay;
           if (!ardisplay) { showHUD('no ardisplay?'); } else {
             // Old versions of WebARonARKit don't expose getPlanes() correctly.
             var planes = ardisplay.getPlanes ? ardisplay.getPlanes() : ardisplay.anchors_;
