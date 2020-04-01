@@ -17,6 +17,39 @@
         
     <!-- Prevent touch causing flicker on iOS. -->
     <style> * { -webkit-tap-highlight-color: rgba(0,0,0,0); } </style>    
+    
+    <script>
+      
+    // AFRAME no longer sends intersection event every time intersection changes position;
+    // this component is modified from docs to move a different entity than the one hit.
+    AFRAME.registerComponent('raycaster-move', {
+        schema: {
+            target: {type: 'selector'}
+        },
+        init: function () {
+            // Use events to figure out what raycaster is listening so we don't have to
+            // hardcode the raycaster.
+            this.el.addEventListener('raycaster-intersected', evt => {
+                this.raycaster = evt.detail.el;
+            });
+            this.el.addEventListener('raycaster-intersected-cleared', evt => {
+                this.raycaster = null;
+            });
+        },
+        update: function (oldData) {
+            //
+        },
+        tick: function () {
+            if (!this.raycaster) { return; }  // Not intersecting.
+
+            let intersection = this.raycaster.components.raycaster.getIntersection(this.el);
+            if (!intersection) { return; }
+            //console.log(intersection.point);
+            this.data.target.setAttribute("position", intersection.point);
+        }
+    });
+    
+    </script>
   </head>
   <body>    
     <!-- This is the thing we stick in the middle of planes we detect. -->
@@ -26,11 +59,11 @@
           this.el.setAttribute('geometry', {primitive:'box', width:0.01, depth:0.01, height:1});
           this.el.setAttribute('position', {y:0.5});
         }
-      });            
+      });
     </script>    
 
     <!-- Our scene uses the ar component. -->
-    <a-scene ar="worldSensing:true">
+    <a-scene ar="worldSensing:true" raycaster-move="target:#ball">
       <!-- When we have a raycaster hit, we use this ball to show where. -->
       <a-sphere id="ball" radius="0.01" position="0 0.005 -0.5"></a-sphere>
 
