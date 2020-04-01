@@ -39,9 +39,10 @@ function onAddedOrUpdatedPlanes(evt) {
       sc.appendChild(plane);
 
       plane.insertAdjacentHTML('beforeend',                   
-
+/*
         // Add a plane label (which needs to be rotated to match a-box).
-        '<a-entity class="label" rotation="-90 0 0"></a-entity>' +             
+        '<a-entity class="label" rotation="-90 0 0"></a-entity>' +     
+*/
         // Add bounding box.
 // NOTE: for A-Frame 0.8.x, using zero height results in the default value of 1 unit                               
         '<a-box class="bbox" position="0 0 0" material="wireframe:true;opacity:0.5;color:' + colorToUse + '"></a-box>' +
@@ -93,7 +94,7 @@ function onAddedOrUpdatedPlanes(evt) {
       bbox.setAttribute('height', 0.001);
       bbox.setAttribute('depth', dz);
     }
-
+/*
     // Fill out the plane label with informative text.
     // DETAIL: when creating, getAttribute doesn't work this tick
     plane.querySelector('.label').setAttribute('text', {
@@ -117,7 +118,7 @@ function onAddedOrUpdatedPlanes(evt) {
     //+ '\nscale y: ' + plane.getAttribute('scale').y
     //+ '\nscale z: ' + plane.getAttribute('scale').z
     });
-
+*/
     // We updated the plane (or added it), so update the raycaster.
     // Because there may be a DOM change, we need to wait a tick.
     if (created) { setTimeout(raycasterNeedsUpdate); } else { raycasterNeedsUpdate(); }

@@ -122,14 +122,12 @@
           ball.setAttribute('visible', true);
         });
         raycaster.addEventListener('raycaster-intersection-cleared', function (evt) {
-///////////////////////////////////////////////////////////////////////////////////
-// NOTE: for A-Frame 0.8.x, only one event with all cleared elements in clearedEls
-//          
-          var el = evt.detail.el || evt.detail.clearedEls[0];
-//          
-///////////////////////////////////////////////////////////////////////////////////
-          showHUD('raycaster-intersection-cleared\n' + el.outerHTML);
-          if (el.getAttribute('class') === 'plane') { el.setAttribute('opacity', 0.5); }
+          var clearedEls = evt.detail.clearedEls;
+          showHUD('raycaster-intersection-cleared\n');// + el.outerHTML);
+          for (var i=0; i<clearedEls.length; i++) {
+            var el = clearedEls[i];
+            if (el.getAttribute('class') === 'plane') { el.setAttribute('opacity', 0.5); }
+          }
           ball.setAttribute('visible', false);
         });
 /////////////////////////////////////////////////////////////////////////////////////////
