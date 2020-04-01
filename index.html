@@ -5,15 +5,11 @@
     <title>aframe-ar-plane</title>
     <meta name="description" content="aframe-ar-plane">
     <!-- First, include whichever version of A-Frame you like. -->
-    <!-- Next, include three.ar.js; add the speech recognition polyfill if you want. -->
-    <!-- Last, include aframe-ar. -->
-<!-- Old versions that go with A-Frame 0.7.1
-    <script src="https://aframe.io/releases/0.7.1/aframe.min.js"></script>    
-    <script src="https://rawgit.com/google-ar/three.ar.js/f9603ee/dist/three.ar.js"></script>
-<!-- Master versions -->   
     <script src="https://cdn.jsdelivr.net/gh/aframevr/aframe@master/dist/aframe-master.min.js"></script>    
-<!-- -->
+    <!-- Last, include aframe-ar. -->
     <script src="https://cdn.jsdelivr.net/gh/chenzlabs/aframe-ar@aframe-1.0.x/dist/aframe-ar.js"></script>    
+    
+    <!-- Include grid shader. -->
     <script src="grid-shader.js"></script>
 
     <!-- Include polygon component. -->
@@ -34,7 +30,6 @@
     </script>    
 
     <script>
-      
 /////////////////////////////////////////////////////////////////////////////////////////
 // NOTE: for A-Frame 0.8.x, we need to listen for cursor intersection changes separately
 //        
@@ -188,7 +183,7 @@
           var planes = sc.components['ar-planes'].getPlanes();
           var keys = Object.keys(planes);
           var msg = '(' + keys.length + ': ' + keys.join(',') + ')\n\n';
-/*           
+          
           planes.forEach(function (plane) {
             // Decompose into pos / quat / scale, and make euler.
             tempMat4.fromArray(plane.modelMatrix);
@@ -197,14 +192,14 @@
 
             // Write out what we got, for debugging.
             msg += 
-            'identifier: ' + plane.identifier + '' + // string, per latest spec
-            ' ' + JSON.stringify(tempPos) + ''
-            ' ' + JSON.stringify(tempEuler.toVector3().multiplyScalar(THREE.Math.RAD2DEG)) + '' + 
+            '\nidentifier: ' + plane.id + // string, per latest spec
+            ' ' + JSON.stringify(tempPos) +
             ' ' + plane.extent + '\n' + // number[2], per latest spec
-            (plane.vertices ? ('vertices: ' + plane.vertices.length + '\n') : '') + // number[3*n], per latest spec
-            '';
+            ' ' + JSON.stringify(tempEuler.toVector3().multiplyScalar(THREE.Math.RAD2DEG)) +
+            (plane.vertices ? (' vertices: ' + plane.vertices.length) : '') + // number[3*n], per latest spec
+            '\n';
           });
-*/            
+          
           showHUD(msg);
         });
         
