@@ -108,7 +108,7 @@
               '<a-entity class="label" rotation="-90 0 0"></a-entity>' +             
 */              
               // Add bounding box.
-              '<a-box class="bbox" position="0 0 0" height="0" material="wireframe:true;opacity:0.5;color:' + colorToUse + '"></a-box>' +
+              '<a-box class="bbox" position="0 0 0" height="0.001" material="wireframe:true;opacity:0.5;color:' + colorToUse + '"></a-box>' +
               // Add a thing to mark the center of the plane.
               '<a-entity thing></a-entity>');
 
@@ -137,7 +137,7 @@
           // plane.setAttribute('scale', evt.detail.scale);
 
           // If we have vertices, use polygon geometry
-          if (false && anchor.vertices) {
+          if (anchor.vertices) {
             // anchor.vertices works for latest ARKit but not for latest ARCore; Float32Array issue?
             plane.setAttribute('geometry', {primitive:'polygon', vertices: anchor.vertices.join(',')});
           } else {
@@ -149,6 +149,7 @@
           var bbox = plane.querySelector('.bbox');
           bbox.setAttribute('width', dx);
           bbox.setAttribute('depth', dz);
+          bbox.setAttribute('rotation', plane.tempRotation);
 /* 
           // Fill out the plane label with informative text.
           // DETAIL: when creating, getAttribute doesn't work this tick
@@ -217,6 +218,7 @@
           for (var i=0; i<clearedEls.length; i++) {
             var el = clearedEls[i];
             if (el.getAttribute('class') === 'plane') { el.setAttribute('opacity', 0.5); }
+          }
           ball.setAttribute('visible', false);
         });
       }
@@ -248,12 +250,12 @@
           
           // Show plane info on click.
           // (may not have arDisplay until tick after loaded)
-          var ardisplay = sc.components['three-ar'].arDisplay;
+          var ardisplay = sc.components['ar'].arDisplay;
           if (!ardisplay) { showHUD('no ardisplay?'); } else {
             // Old versions of WebARonARKit don't expose getPlanes() correctly.
             var planes = ardisplay.getPlanes ? ardisplay.getPlanes() : ardisplay.anchors_;
 
-            var keys = Object.keys(sc.components['three-ar-planes'].planes);
+            var keys = Object.keys(sc.components['ar-planes'].planes);
             var msg = planes.length + ' (vs. ' + keys.length + ': ' + keys.join(',') + ')\n\n';
 /*           
             planes.forEach(function (plane) {              
