@@ -5,11 +5,9 @@
     <title>aframe-ar-plane</title>
     <meta name="description" content="aframe-ar-plane">
     <!-- First, include whichever version of A-Frame you like. -->
-    <script src="https://rawgit.com/aframevr/aframe/master/dist/aframe-master.min.js"></script>
-    <!-- Next, include three.ar.js; add the speech recognition polyfill if you want. -->
-    <script src="https://rawgit.com/google-ar/three.ar.js/master/dist/three.ar.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/aframevr/aframe@master/dist/aframe-master.min.js"></script>    
     <!-- Last, include aframe-ar. -->
-    <script src="https://rawgit.com/chenzlabs/aframe-ar/47aa7fa/dist/aframe-ar.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/chenzlabs/aframe-ar@aframe-1.0.x/dist/aframe-ar.js"></script>    
     
     <!-- Include XZ grid shader. -->
     <script src="grid-shader.js"></script>
@@ -32,7 +30,7 @@
     </script>    
 
     <!-- Our scene uses the ar component. -->
-    <a-scene ar>
+    <a-scene ar="worldSensing:true">
       <!-- When we have a raycaster hit, we use this ball to show where. -->
       <a-sphere id="ball" radius="0.01" position="0 0.005 -0.5"></a-sphere>
 
@@ -139,7 +137,7 @@
           // plane.setAttribute('scale', evt.detail.scale);
 
           // If we have vertices, use polygon geometry
-          if (anchor.vertices) {
+          if (false && anchor.vertices) {
             // anchor.vertices works for latest ARKit but not for latest ARCore; Float32Array issue?
             plane.setAttribute('geometry', {primitive:'polygon', vertices: anchor.vertices.join(',')});
           } else {
@@ -214,9 +212,11 @@
           ball.setAttribute('visible', true);
         });
         raycaster.addEventListener('raycaster-intersection-cleared', function (evt) {
-          var el = evt.detail.el;
-          showHUD('raycaster-intersection-cleared\n' + el.outerHTML);
-          if (el.getAttribute('class') === 'plane') { el.setAttribute('opacity', 0.5); }
+          var clearedEls = evt.detail.clearedEls;
+          showHUD('raycaster-intersection-cleared\n');// + el.outerHTML);
+          for (var i=0; i<clearedEls.length; i++) {
+            var el = clearedEls[i];
+            if (el.getAttribute('class') === 'plane') { el.setAttribute('opacity', 0.5); }
           ball.setAttribute('visible', false);
         });
       }
