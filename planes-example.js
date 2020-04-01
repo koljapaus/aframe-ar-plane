@@ -42,7 +42,6 @@ function onAddedOrUpdatedPlanes(evt) {
 
         // Add a plane label (which needs to be rotated to match a-box).
         '<a-entity class="label" rotation="-90 0 0"></a-entity>' +             
-
         // Add bounding box.
 // NOTE: for A-Frame 0.8.x, using zero height results in the default value of 1 unit                               
         '<a-box class="bbox" position="0 0 0" material="wireframe:true;opacity:0.5;color:' + colorToUse + '"></a-box>' +
@@ -70,8 +69,8 @@ function onAddedOrUpdatedPlanes(evt) {
       plane.tempEuler.z * THREE.Math.RAD2DEG);
     plane.setAttribute('position', plane.tempPosition);
     plane.setAttribute('rotation', plane.tempRotation);
-    // Currently, scale is always 1... 
-    // plane.setAttribute('scale', evt.detail.scale);
+    // Currently, scale is always almost exactly 1... 
+    // plane.setAttribute('scale', tempScale);
 
     // If we have vertices, use polygon geometry
     if (anchor.vertices) {
@@ -94,7 +93,7 @@ function onAddedOrUpdatedPlanes(evt) {
       bbox.setAttribute('height', 0.001);
       bbox.setAttribute('depth', dz);
     }
-    
+
     // Fill out the plane label with informative text.
     // DETAIL: when creating, getAttribute doesn't work this tick
     plane.querySelector('.label').setAttribute('text', {
@@ -104,7 +103,7 @@ function onAddedOrUpdatedPlanes(evt) {
      align: 'left',
      zOffset: 0.01,
      wrapCount: 100, value: 
-      'id: ' + anchor.identifier
+      'id: ' + anchor.identifier   
     + '\nwidth: ' + dx
     + '\ndepth: ' + dz
     + '\nposition x: ' + plane.tempPosition.x
@@ -112,7 +111,7 @@ function onAddedOrUpdatedPlanes(evt) {
     + '\nposition z: ' + plane.tempPosition.z
     + '\nrotation x: ' + plane.tempRotation.x
     + '\nrotation y: ' + plane.tempRotation.y
-    + '\nrotation z: ' + plane.tempRotation.z
+    + '\nrotation z: ' + plane.tempRotation.z    
     // Currently, scale is always 1... 
     //+ '\nscale x: ' + plane.getAttribute('scale').x
     //+ '\nscale y: ' + plane.getAttribute('scale').y
