@@ -74,7 +74,7 @@
     <script src="planes-example.js"></script>        
 
     <!-- Our scene uses the ar component. -->
-    <a-scene ar>
+    <a-scene ar="worldSensing:true">
       <!-- When we have a raycaster hit, we use this ball to show where. -->
       <a-sphere id="ball" radius="0.01" position="0 0.005 -0.5"></a-sphere>
 
@@ -187,7 +187,7 @@
           
           // Show plane info on click.
           // (may not have arDisplay until tick after loaded)
-          var ardisplay = sc.components['three-ar'].arDisplay;
+          var ardisplay = sc.components['ar'].arDisplay;
           if (!ardisplay) { showHUD('no ardisplay?'); } else {
             // Old versions of WebARonARKit don't expose getPlanes() correctly.
             var planes = ardisplay.getPlanes ? ardisplay.getPlanes() : ardisplay.anchors_;
