@@ -20,36 +20,41 @@
     
     <script>
       
-    // AFRAME no longer sends intersection event every time intersection changes position;
-    // this component is modified from docs to move a different entity than the one hit.
-    AFRAME.registerComponent('raycaster-move', {
-        schema: {
-            target: {type: 'selector'}
-        },
+/////////////////////////////////////////////////////////////////////////////////////////
+// NOTE: for A-Frame 0.8.x, we need to listen for cursor intersection changes separately
+//        
+      AFRAME.registerComponent('track-cursor-intersection', {
         init: function () {
-            // Use events to figure out what raycaster is listening so we don't have to
-            // hardcode the raycaster.
-            this.el.addEventListener('raycaster-intersected', evt => {
-                this.raycaster = evt.detail.el;
-            });
-            this.el.addEventListener('raycaster-intersected-cleared', evt => {
-                this.raycaster = null;
-            });
+          this.point = new THREE.Vector3();
         },
-        update: function (oldData) {
-            //
-        },
-        tick: function () {
-            if (!this.raycaster) { return; }  // Not intersecting.
-
-            let intersection = this.raycaster.components.raycaster.getIntersection(this.el);
-            if (!intersection) { return; }
-            //console.log(intersection.point);
-            this.data.target.setAttribute("position", intersection.point);
+        
+        tick: function (t, dt) {
+          // NOTE: not throttled to raycaster checkIntersections interval!
+          var cursor = this.el.components.cursor;
+          var raycaster = this.el.components.raycaster;
+          var newIntersection;
+          // NOTE: A-Frame 0.7.1 (which doesn't need this) does not have raycaster.intersections
+          if (cursor && raycaster && raycaster.intersections) {
+            newIntersection = raycaster.intersections.length ? raycaster.intersections[0] : undefined;
+            // NOTE: the intersections are always different (!) so check object
+            if ((cursor.intersection && cursor.intersection.object) !== (newIntersection && newIntersection.object)) {
+              // new cursor intersection object
+              cursor.intersection = newIntersection;              
+              this.el.emit('cursor-intersection-changed', cursor.intersection, false);
+            } else
+            if (newIntersection && !newIntersection.point.equals(cursor.intersection.point)) {
+              // new cursor intersection point
+              cursor.intersection.point.copy(newIntersection.point);
+              this.el.emit('cursor-intersection-changed', newIntersection, false);
+            } else {
+              // same or no cursor intersection point
+            }
+          }
         }
-    });
-    
-    </script>
+      });            
+//
+/////////////////////////////////////////////////////////////////////////////////////////
+    </script>    
   </head>
   <body>    
     <!-- This is the thing we stick in the middle of planes we detect. -->
@@ -73,7 +78,7 @@
         
         <!-- Declare a cursor, and what objects its raycaster hit (including AR). -->
         <!-- NOTE: ar-raycaster VRHit uses a "tolerance" fudge factor, so imprecise -->
-        <a-entity cursor="fuse:false"
+        <a-entity cursor="fuse:false" track-cursor-intersection
                   raycaster="objects:.plane;recursive:false" 
                   ar-raycaster="el:#ar-world"></a-entity>
         
@@ -141,7 +146,7 @@
               '<a-entity class="label" rotation="-90 0 0"></a-entity>' +             
 */              
               // Add bounding box.
-              '<a-box class="bbox" position="0 0 0" height="0.001" material="wireframe:true;opacity:0.5;color:' + colorToUse + '"></a-box>' +
+              '<a-box class="bbox" position="0 0 0" material="wireframe:true;opacity:0.5;color:' + colorToUse + '"></a-box>' +
               // Add a thing to mark the center of the plane.
               '<a-entity thing></a-entity>');
 
@@ -261,6 +266,23 @@
           }
           ball.setAttribute('visible', false);
         });
+/////////////////////////////////////////////////////////////////////////////////////////
+// NOTE: for A-Frame 0.8.x, we need to listen for cursor intersection changes separately
+//        
+        raycaster.addEventListener('cursor-intersection-changed', function (evt) {
+          if (evt.detail) {
+            // Use provided hit.
+            var point = evt.detail.point;
+            var distance = evt.detail.distance;
+            var el = evt.detail.object.el;
+            showHUD('cursor-intersection-changed ' + distance + '\n' + JSON.stringify(point) + '\n' + el.id /*el.outerHTML*/);
+            if (el.getAttribute('class') === 'plane') { el.setAttribute('opacity', 1.0); }
+            ball.setAttribute('position', point);
+            ball.setAttribute('visible', true);
+          }
+        });
+//
+/////////////////////////////////////////////////////////////////////////////////////////
       }
       
       function addEventListeners() {

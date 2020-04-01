@@ -45,7 +45,7 @@ function onAddedOrUpdatedPlanes(evt) {
 
         // Add bounding box.
 // NOTE: for A-Frame 0.8.x, using zero height results in the default value of 1 unit                               
-        '<a-box class="bbox" position="0 0 0" height="0.001" material="wireframe:true;opacity:0.5;color:' + colorToUse + '"></a-box>' +
+        '<a-box class="bbox" position="0 0 0" material="wireframe:true;opacity:0.5;color:' + colorToUse + '"></a-box>' +
         // Add a thing to mark the center of the plane.
         '<a-entity thing></a-entity>');
 
@@ -84,9 +84,17 @@ function onAddedOrUpdatedPlanes(evt) {
 
     // Update the bounding box.
     var bbox = plane.querySelector('.bbox');
-    bbox.setAttribute('width', dx);
-    bbox.setAttribute('depth', dz);
-
+    if (anchor.alignment) {
+      // TODO: fix if vertical          
+      bbox.setAttribute('width', dx);
+      bbox.setAttribute('height', dz);
+      bbox.setAttribute('depth', 0.001);
+    } else {
+      bbox.setAttribute('width', dx);
+      bbox.setAttribute('height', 0.001);
+      bbox.setAttribute('depth', dz);
+    }
+    
     // Fill out the plane label with informative text.
     // DETAIL: when creating, getAttribute doesn't work this tick
     plane.querySelector('.label').setAttribute('text', {
