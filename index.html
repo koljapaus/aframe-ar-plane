@@ -181,25 +181,26 @@
           
           // Show plane info on click.
           var planes = sc.components['ar-planes'].getPlanes();
-          var keys = Object.keys(planes);
-          var msg = '(' + keys.length + ': ' + keys.join(',') + ')\n\n';
-          
-          planes.forEach(function (plane) {
-            // Decompose into pos / quat / scale, and make euler.
-            tempMat4.fromArray(plane.modelMatrix);
-            tempMat4.decompose(tempPos, tempQuat, tempScale);
-            tempEuler.setFromQuaternion(tempQuat);
+          if (planes) {
+            var keys = Object.keys(planes);
+            var msg = '(' + keys.length + ': ' + keys.join(',') + ')\n\n';
 
-            // Write out what we got, for debugging.
-            msg += 
-            '\nidentifier: ' + plane.id + // string, per latest spec
-            ' ' + JSON.stringify(tempPos) +
-            ' ' + plane.extent + '\n' + // number[2], per latest spec
-            ' ' + JSON.stringify(tempEuler.toVector3().multiplyScalar(THREE.Math.RAD2DEG)) +
-            (plane.vertices ? (' vertices: ' + plane.vertices.length) : '') + // number[3*n], per latest spec
-            '\n';
-          });
-          
+            planes.forEach(function (plane) {
+              // Decompose into pos / quat / scale, and make euler.
+              tempMat4.fromArray(plane.modelMatrix);
+              tempMat4.decompose(tempPos, tempQuat, tempScale);
+              tempEuler.setFromQuaternion(tempQuat);
+
+              // Write out what we got, for debugging.
+              msg += 
+              '\nidentifier: ' + plane.id + // string, per latest spec
+              ' ' + JSON.stringify(tempPos) +
+              ' ' + plane.extent + '\n' + // number[2], per latest spec
+              ' ' + JSON.stringify(tempEuler.toVector3().multiplyScalar(THREE.Math.RAD2DEG)) +
+              (plane.vertices ? (' vertices: ' + plane.vertices.length) : '') + // number[3*n], per latest spec
+              '\n';
+            });
+          }          
           showHUD(msg);
         });
         
