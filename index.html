@@ -23,8 +23,14 @@
     <script>
       AFRAME.registerComponent('thing', {
         init: function () {
-          this.el.setAttribute('geometry', {primitive:'box', width:0.01, depth:0.01, height:1});
-          this.el.setAttribute('position', {y:0.5});
+          this.el.setAttribute('geometry', {primitive:'box', width:0.1, depth:0.01, height:0.5});
+          this.el.setAttribute('position', {y:0.25});
+        }
+      });  
+      AFRAME.registerComponent('other_thing', {
+        init: function () {
+          this.el.setAttribute('geometry', {primitive:'cylinder',  height:0.5, radius:0.1});
+          this.el.setAttribute('position', {y:0.25});
         }
       });            
     </script>    
@@ -71,6 +77,10 @@
 
     <!-- Our scene uses the ar component. -->
     <a-scene ar="worldSensing:true">
+      <a-assets>
+        <a-asset-item id="peach" src="models/peach.glb"></a-asset-item>
+      </a-assets>
+
       <!-- When we have a raycaster hit, we use this ball to show where. -->
       <a-sphere id="ball" radius="0.01" position="0 0.005 -0.5"></a-sphere>
 
@@ -167,16 +177,21 @@
           // If the cursor has an intersection, place a marker.
           var cursor = sc.querySelector('[ar-raycaster]').components.cursor;
           if (cursor.intersection) {
+            /*
             var marker = document.createElement('a-box');
-            marker.setAttribute('width', 0.01);
-            marker.setAttribute('depth', 0.01);
-            marker.setAttribute('height', 1);
-            marker.setAttribute('color', 'orange');
+            marker.setAttribute('width', 0.1);
+            marker.setAttribute('depth', 0.1);
+            marker.setAttribute('height', 0.1);
+            marker.setAttribute('color', 'red');
+            */
+            var marker = document.createElement('a-entity');            
+            marker.setAttribute('gltf-model',"#peach");
+            marker.setAttribute('scale',"0.02 0.02 0.02")
             marker.setAttribute('position', {
               x: cursor.intersection.point.x, 
-              y: cursor.intersection.point.y + 0.5, 
+              y: cursor.intersection.point.y + 0.1, 
               z: cursor.intersection.point.z});
-            sc.appendChild(marker);         
+            sc.appendChild(marker);
           }
           
           // Show plane info on click.

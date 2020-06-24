@@ -42,7 +42,7 @@ function onAddedOrUpdatedPlanes(evt) {
         // Add bounding box.
         '<a-box class="bbox" position="0 0 0" material="wireframe:true;opacity:0.5;color:' + colorToUse + '"></a-box>' +
         // Add a thing to mark the center of the plane.
-        '<a-entity thing></a-entity>');
+        '<a-entity other_thing></a-entity>');
 
       // Create the temp objects we will use when updating.
       plane.tempPosition = new THREE.Vector3();
